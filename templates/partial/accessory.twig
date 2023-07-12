@@ -1,0 +1,68 @@
+<section class="l-accessory d-none d-lg-block">
+	<div class="u-container u-relative">
+		<div class="l-accessory__text">
+			<h2 class="u-h2">{{ 'Accessories' | translateString('Accessories - title') }}</h2>
+			<p>{{ 'Jewelry, bags, backpacks, glasses and more' | translateString('Accessories - description') }}</p>
+			<a href="{{site.link}}/product-category/accessories/" class="u-btn is-black">{{ 'The entire collection' | translateString('buttons - The entire collection') }}</a>
+		</div>
+
+		<div class="text-center">
+			<div class="l-accessory__bg">
+				<img 
+					src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==" 
+					data-src="{{theme.link}}/src/img/accessory1.jpg" 
+					class="lazy" 
+					alt="accessory background" 
+					height="830" 
+					width="825"
+				>
+
+				<a href="{{site.link}}/product-category/accessories/" class="c-circle">
+					<svg width="61px" height="19px" class="c-circle__arrow">
+		        <use xlink:href="#small-arrow"></use>
+		      </svg>
+					<img 
+						class="lazy"
+						src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==" 
+						data-src="{{theme.link}}/src/img/circle-img.png" 
+						alt="circle image"
+						width="251"
+						height="251"
+					>
+				</a>
+			</div>
+		</div>
+		
+
+		{% for item in data %}
+			{% if loop.first %}
+				{% set imgSize = 300 %}
+				{% set imgPlaceholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==' %}
+			{% else %}
+				{% set imgSize = 430 %}
+				{% set imgPlaceholder = 'data:image/gif;base64,R0lGODlhKwAeAIAAAP///wAAACH5BAEAAAEALAAAAAArAB4AAAIjjI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2VAAAOw==' %}
+			{% endif %}
+
+			<a href="{{item.link}}" class="l-accessory__block {{ loop.first ? "is-first" : "is-second" }}">
+				<div class="l-accessory__block-text">
+					<span>{{item.title}}</span>
+					<svg width="61px" height="19px" class="l-accessory__arrow">
+		        <use xlink:href="#small-arrow"></use>
+		      </svg>
+				</div>
+				
+				<picture style="padding: 12px; background-color: white;">
+					<source data-srcset="{{item.img|resize(imgSize, 300, 'center')|towebp}}" type="image/webp">
+				  <source data-srcset="{{item.img|resize(imgSize, 300, 'center')|tojpg}}" type="image/jpeg"> 
+				  <img 
+            src="{{imgPlaceholder}}" 
+            alt="Аксессуары: сумочки - {{loop.index}}" 
+            width="{{imgSize}}" 
+            height="300"
+            class="lazy"
+          >
+				</picture>
+			</a>
+		{% endfor %}
+	</div>
+</section>

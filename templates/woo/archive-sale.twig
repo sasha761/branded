@@ -1,0 +1,48 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+  <main class="p-shop">
+    <div class="u-container">
+      {# <pre>{{dump(query_object)}}</pre>  #}
+      
+      {# <pre>{{dump(products)}}</pre>  #}
+      {{breadcrumbs}}
+      
+
+      <div class="p-shop__flex">  
+        {# {% include 'templates/partial/sidebar.twig' %} #}
+        <section class="l-shop">
+          <div class="l-shop__ordering">
+            <h1 class="u-h2">{{post.title}}</h1>
+          </div>
+
+
+          <div class="l-shop__product">
+            <div class="shop-products">
+              <div class="row js-load-more">
+                {% for post in products.posts %}
+                  <div class="col-lg-3 col-md-4 col-sm-6 col-6 u-col js-gallery-item">
+                    {% include 'templates/partial/product.twig' with {'data': post} %}
+                  </div>
+                {% endfor %}
+              </div>  
+            </div>
+          </div>
+
+          {% if pagination is not empty %}
+            <div class="c-pagination">
+              <ul>
+                {% for page in pagination %}
+                  <li>
+                    {{page}}
+                  </li>  
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+        </section>
+      </div>
+    </div>
+
+{% endblock  %}

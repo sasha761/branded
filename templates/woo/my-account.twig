@@ -1,0 +1,27 @@
+{% extends "templates/base.twig" %}
+
+{% block content %}
+  <main class="p-my-account p-my-account--{{endpoint_slug}}">
+    <div class="u-container">
+
+      <nav class="p-my-account__breadcrumbs">
+        <a href="{{site.url}}/my-account">החשבון שלי</a>
+        {% if endpoint_title %}
+        <span>{{ endpoint_title }}</span>
+        {% endif %}
+      </nav>
+
+      <h1 class="u-h1">
+        <a href="{{logout_url}}"><<  יציאה מהחשבון</a>
+        <span>{{ user.name }}, שלום</span>
+      </h1>
+
+      {% apply shortcodes %}
+        [woocommerce_my_account]
+      {% endapply %}
+
+      </form>
+    </div>
+  </main>
+{% endblock  %}
+

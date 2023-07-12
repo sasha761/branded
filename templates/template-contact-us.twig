@@ -1,0 +1,52 @@
+{% extends 'templates/base.twig' %}
+{% block content %}
+	<main class="p-contact-us">
+  	
+    <div class="u-container">
+    
+      <div class="row">
+        <div class="col-lg-6 col-md-12 u-col">
+        	<form class="c-contact-us js-form-contact-us">
+            <h1 class="u-h2">Контакты</h1>
+        		<div class="c-form__input c-input">
+              {# <span>Имя</span> #}
+        			<input type="text" placeholder="Имя" required="">
+        		</div>
+
+        		<div class="c-form__input c-input">
+              {# <span>Mail</span> #}
+        			<input type="email" placeholder="Mail" required="">
+        		</div>
+        		
+        		<div class="c-form__input c-input">
+              {# <span>Телефон</span> #}
+        			<input type="tel" placeholder="Телефон" required="">
+        		</div>
+        		
+        		<div class="c-form__input c-input">
+              {# <span>Сообщение</span> #}
+        			<textarea placeholder="Сообщение" required="" rows="8"></textarea>
+        		</div>
+        		
+        		<button class="u-btn is-yellow is-medium" type="submit">Отправить</button>
+        	</form>
+        </div>
+      	<div class="col-lg-6 col-md-12 u-col">
+      		<div class="map">
+
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2750.322483204511!2d30.715098015821635!3d46.42248737912397!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c6330ca72c2315%3A0xde6264fe20279b3e!2z0YPQuy4g0JrQvtGB0LzQvtC90LDQstGC0LAg0JrQvtC80LDRgNC-0LLQsCwgMTAsINCe0LTQtdGB0YHQsCwg0J7QtNC10YHRgdC60LDRjyDQvtCx0LvQsNGB0YLRjCwgNjUwMDA!5e0!3m2!1sru!2sua!4v1641930712880!5m2!1sru!2sua" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+          </div>
+          <h2 class="u-h3" style="margin-bottom: 20px; margin-top: 30px;">Где нас найти</h2>
+          <div class="row" style="line-height: 1.6;">
+            <div class="col-sm-6 u-col">
+              <p>Украина, г. Одесса,<br>65000 Улица космонавта комарова 10</p>
+            </div>
+            <div class="col-sm-6 u-col">
+              <p>branded.own@gmail.com <br><a href="tel:{{ options.social.phone|replace({' ': ''}) }}">{{ options.social.phone }}</a></p>
+            </div>
+          </div>
+      	</div>
+      </div>   
+    </div>
+	</main>
+{% endblock %}

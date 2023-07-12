@@ -1,0 +1,59 @@
+{% set permalink = function('get_the_permalink', id) %}
+{% set thumb_md  = function('get_the_post_thumbnail_url', id, 'archive_md') %}
+{% set thumb_xl  = function('get_the_post_thumbnail_url', id, 'archive_xl') %}
+{% set brand     = function('wc_get_product_terms', id, 'pa_brand', {'fields': 'names'} ) %}
+
+{% set product_data    = function('wc_get_product', id) %}
+{% set is_sale         = attribute(product_data, 'is_on_sale') %}
+{% set product_price   = attribute(product_data, 'get_price_html') %}
+{% if is_sale %}
+  {% set price_sale    = attribute(product_data, 'get_variation_sale_price') ?: attribute(product_data, 'get_sale_price')  %}
+  {% set price_regular = attribute(product_data, 'get_variation_regular_price') ?: attribute(product_data, 'get_regular_price') %}
+  {% set percent       = (price_regular - price_sale) / price_regular * 100 %}
+{% endif %}
+
+{% if is_mobile == true %}
+  {% set imgPlaceholder = 'data:image/gif;base64,R0lGODlhBQAGAIAAAP///wAAACH5BAEAAAEALAAAAAAFAAYAAAIFjI+pawUAOw==' %}
+{% else %}
+  {% set imgPlaceholder = 'data:image/gif;base64,R0lGODlhBAAFAIAAAP///wAAACH5BAEAAAEALAAAAAAEAAUAAAIEjI+ZBQA7' %}
+{% endif %}
+
+<div class="c-product js-product-item" data-id="{{id}}" data-brand="{{brand[0]}}">
+  <a href="{{permalink}}" class="c-product__img">
+    <picture>
+      <source
+        data-srcset="{{thumb_xl}}"
+        media="(min-width: 426px)"
+      >
+      <source
+        data-srcset="{{thumb_md}}"
+        media="(max-width: 425px)"
+      >
+      <img
+        src="{{imgPlaceholder}}"
+        alt="{{data.post_title|replace({'"':'\''})|raw}}"
+        width="342"
+        height="435"
+        class="lazy"
+      >
+    </picture>
+    {% if is_sale %}
+      <span class="c-product__sale">-{{percent|round}}%</span>
+    {% endif %} 
+  </a>
+
+  {% if brands %}
+    <div class="c-product__brand">
+      <svg width="61px" height="19px" class="c-product__arrow">
+        <use xlink:href="#small-arrow"></use>
+      </svg>
+      <h4>{{brand[0]}}</h4>
+    </div>
+  {% endif %} 
+  <div class="c-product__text">
+    <h4 class="c-product__text-title">{{data.get_name}}</h4>
+    <p class="c-price">
+      {{product_price}}
+    </p>
+  </div>
+</div>

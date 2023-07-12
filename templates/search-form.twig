@@ -1,0 +1,13 @@
+<div class="aws-container" data-url="/?wc-ajax=aws_action" data-siteurl="http://brand.loc">
+  <form role="search" method="get" id="searchform" class="c-search" action="{{site.link}}">
+    <button type="submit" class="c-search__button">
+      <svg width="15px" height="17px" class="is-search">
+        <use xlink:href="#search"></use>
+      </svg>
+    </button>
+    <input type="hidden" name="post_type" value="product">
+    <input type="hidden" name="type_aws" value="true">
+    <input type="text" value="{{ function('get_search_query') }}" placeholder="{{ 'Search' | translateString('input - Search') }}" name="s" id="s" />
+  </form> 
+</div>
+

@@ -1,0 +1,20 @@
+<footer class="l-footer">
+  <div class="l-footer__bottom">
+    <div class="u-container">
+      <div class="row c-footer-menu">
+        {% include 'templates/menu-footer.twig' with {'menu': footer_menu.get_items} %}
+        <div class="col-lg-3 col-md-6 col-6 u-col">
+          <h3 class="c-footer-menu__title">{{ 'We are on social networks' | translateString('Footer - social') }}</h3>
+          {% include 'templates/partial/social.twig' %}
+
+          <a class="is-phone" href="tel:{{ options.social.phone|replace({' ': ''}) }}">{{ options.social.phone }}</a>
+
+          <h3 class="u-h4">{{ 'Partners' | translateString('Footer - Partners') }}</h3>
+          
+          <p>{{ 'Connect to the affiliate program "Marketplace"' | translateString('Footer - marketplace') }}</p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</footer>

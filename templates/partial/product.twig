@@ -1,0 +1,91 @@
+{% set permalink       = function('get_the_permalink', data.ID) %}
+{# {% set thumb           = function('get_the_post_thumbnail_url', data.ID, 'single_xl') %} #}
+{% set thumb_md        = function('get_the_post_thumbnail_url', data.ID, 'archive_md') %}
+{% set thumb_xl        = function('get_the_post_thumbnail_url', data.ID, 'archive_xl') %}
+{% set brand           = function('wc_get_product_terms', data.ID, 'pa_brand', {'fields': 'names'} ) %}
+{% set video           = function('get_field', 'video', data.ID ) %}
+{% set product_data    = function('wc_get_product', data.ID) %}
+
+{% set is_sale         = attribute(product_data, 'is_on_sale') %}
+{% set product_price   = attribute(product_data, 'get_price_html') %}
+{% if is_sale %}
+	{% set price_sale    = attribute(product_data, 'get_variation_sale_price') ?: attribute(product_data, 'get_sale_price')  %}
+	{% set price_regular = attribute(product_data, 'get_variation_regular_price') ?: attribute(product_data, 'get_regular_price') %}
+	{% set percent       = (price_regular - price_sale) / price_regular * 100 %}
+{% endif %}
+
+{% set outStock        = product_data.get_stock_status %}
+
+{% if is_mobile == true %}
+	{% set imgPlaceholder = 'data:image/gif;base64,R0lGODlhBQAGAIAAAP///wAAACH5BAEAAAEALAAAAAAFAAYAAAIFjI+pawUAOw==' %}
+{% else %}
+	{% set imgPlaceholder = 'data:image/gif;base64,R0lGODlhBAAFAIAAAP///wAAACH5BAEAAAEALAAAAAAEAAUAAAIEjI+ZBQA7' %}
+{% endif %}
+
+
+
+{# {% if outStock == 'outofstock' %} #}
+{# <pre>{{dump(outStock)}}</pre> #}
+
+<div class="c-product js-product-item" data-id="{{data.ID}}" data-brand="{{brand[0]}}">
+	{% if video %}
+		<a href="{{permalink}}" class="c-product__video">
+			<video class="js-lazy-load lazy" data-poster="{{thumb_xl}}" width="342" height="435" muted playsinline autoplay loop>
+		    <source data-src="{{video}}" type="video/mp4">
+			</video>
+
+			{% if is_sale %}
+				<span class="c-product__sale">-{{percent|round}}%</span>
+			{% endif %}	
+
+			{% if outStock == 'outofstock' %}
+				<span class="c-product__stock">{{ 'Out of stock' | translateString('Product - Out of stock') }}</span>
+			{% endif %}
+		</a>
+	{% else %}
+		<a href="{{permalink}}" class="c-product__img">
+			<picture>
+        <source
+          data-srcset="{{thumb_xl}}"
+          media="(min-width: 426px)"
+        >
+        <source
+          data-srcset="{{thumb_md}}"
+          media="(max-width: 425px)"
+        >
+        <img
+          src="{{imgPlaceholder}}"
+          alt="{{data.post_title|replace({'"':'\''})|raw}}"
+          width="342"
+          height="435"
+          class="lazy"
+        >
+			</picture>
+			{% if is_sale %}
+				<span class="c-product__sale">-{{percent|round}}%</span>
+			{% endif %}	
+
+			{% if outStock == 'outofstock' %}
+				<span class="c-product__stock">{{ 'Out of stock' | translateString('Product - Out of stock') }}</span>
+			{% endif %}
+		</a>
+	{% endif %}
+
+	{% if brands %}
+		<div class="c-product__brand">
+			<svg width="61px" height="19px" class="c-product__arrow">
+	      <use xlink:href="#small-arrow"></use>
+	    </svg>
+			<p>{{brand[0]}}</p>
+		</div>
+	{% endif %}	
+	
+	{% if not brands %}
+		<div class="c-product__text">
+			<p class="c-product__text-title">{{data.post_title}}</p>
+			<p class="c-price">
+				{{product_price}}
+			</p>
+		</div>
+	{% endif %}
+</div>

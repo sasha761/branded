@@ -1,0 +1,13 @@
+{% extends "base.twig" %}
+
+{% block content %}
+  <main class="p-single">
+    <div class="u-container">
+      {{breadcrumbs}}
+      <h1 class="u-h1"> {{ post.title }}</h1>
+      <div class="p-single__content">
+        {{ post.content }}
+      </div>
+    </div>
+  </main>
+{% endblock %}

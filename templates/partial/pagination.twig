@@ -1,0 +1,41 @@
+{% if posts.pagination.pages is not empty %}
+  <div class="c-pagination">
+    <ul>
+      {# {% if pagination.prev %}
+        <li class="is-prev btn">
+          <a href="{{ pagination.prev.link }}">
+          </a>
+        </li>
+      {% else %}
+        <li class="is-prev btn disabled">
+          <button disabled>
+          </button>
+        </li>
+      {% endif %} #}
+
+      {% for page in pagination.pages %}
+        {% if page.link %}
+          <li>
+            <a href="{{ page.link }}" class="{{ page.class }}">{{ page.title }}</a>
+          </li>
+        {% else %}
+          <li class="is-active">
+            <span class="{{ page.class }}">{{ page.title }}</span>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {# {% if pagination.next %}
+        <li class="is-next btn">
+          <a href="{{ pagination.next.link }}">
+          </a>
+        </li>
+      {% else %}
+        <li class="is-next btn disabled">
+          <button disabled>
+          </button>
+        </li>
+      {% endif %} #}
+    </ul>
+  </div>
+{% endif %}

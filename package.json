@@ -1,0 +1,40 @@
+{
+  "name": "branded",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index2.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "watch": "parcel watch",
+    "build": "parcel build"
+  },
+  "browserslist": "> 0.5%, last 3 versions, not dead",
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^5.0.0",
+    "@parcel/transformer-sass": "^2.7.0",
+    "parcel": "^2.7.0"
+  },
+  "dependencies": {
+    "imask": "^6.4.2",
+    "jquery": "^3.7.0",
+    "jquery-nice-select": "^1.1.0",
+    "swiper": "^8.4.5",
+    "validator": "^13.7.0",
+    "vanilla-lazyload": "^17.8.2"
+  },
+  "targets": {
+    "css": {
+      "source": "src/scss/main.scss",
+      "distDir": "dist/css"
+    },
+    "js-jquery": {
+      "source": "src/js/index.js",
+      "distDir": "dist/js"
+    },
+    "js": {
+      "source": "src/js/index2.js",
+      "distDir": "dist/js"
+    }
+  }
+}

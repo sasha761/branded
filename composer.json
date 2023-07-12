@@ -1,0 +1,33 @@
+{
+  "name": "branded/branded",
+  "type": "wordpress-theme",
+  "description": "Timber/Twig based wp theme",
+  "keywords": [
+    "WordPress",
+    "Themes",
+    "Timber",
+    "Twig"
+  ],
+  "homepage": "https://branded.com.ua/",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+        "name": "Contributors",
+        "homepage": "https://branded.com.ua/"
+    }
+  ],
+  "require": {
+    "php": ">=7.4||^8.0",
+    "twig/twig": "^3.0",
+    "timber/timber": "2.x-dev"
+  },
+  "support": {
+    "issues": "https://t.me/Branded_own"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": false,
+      "composer/installers": true
+    }
+  }
+}

@@ -1,0 +1,58 @@
+<div class="l-mini-cart widget_shopping_cart_content">
+	<p class="u-h3">{{ 'Cart' | translateString('Cart - Cart') }}</p>
+	<span class="l-mini-cart__count">{{ minicart.count }} товар</span>
+	{% if cart_products %}
+		<ul class="l-mini-cart__list">
+			{% for key, product in cart_products %}
+				<li class="l-mini-cart__item">
+					<div class="l-mini-cart__item-img">
+						<a href="{{ product.url }}">
+							{# <img src="{{product.thumbnail|resize(100, height) }}"> #}
+							{{product.thumbnail}}
+						</a>
+					</div>
+					<div class="l-mini-cart__item-info">
+						{% if product.attr.brand %}
+							<div class="is-brand">{{product.attr.brand[0]}}</div>
+						{% endif %}
+						<span class="is-name">{{product.title}}</span>
+						{% if product.quantity >= 2 %}
+							<p class="is-quantity">{{ 'Quantity' | translateString('Cart - Quantity') }}: <b>{{product.quantity}}</b></p>
+						{% endif %}
+						<div class="l-mini-cart__item-attr">
+							{% if product.attr.size %}
+								<div class="is-size">
+									<span>{{ 'Size' | translateString('Cart - Size') }}:</span>
+									<span class="is-bold">{{product.attr.size}}</span>
+								</div>
+							{% endif %}	
+							{% if product.attr.color %}
+								<div class="is-color">
+									<span>{{ 'Color' | translateString('Cart - Color') }}:</span>
+									<span class="is-bold">{{product.attr.color}}</span>
+								</div>
+							{% endif %}
+						</div>
+
+						<p class="c-price">
+							{{ product.price }}
+						</p>
+
+					</div>
+					<a href="{{product.delete_permalink}}" class="c-remove" data-product_id="{{ product.delete_productid }}" data-product_sku="{{ product.delete_sku }}">x</a>
+				</li>
+			{% endfor %}	
+		</ul>
+		<div class="l-mini-cart__total">
+			<span>{{ 'Order amount' | translateString('Cart - Order amount') }}</span>
+			<span class="is-bold">{{total}}</span>
+		</div>
+
+		<div class="l-mini-cart__btn">
+			<a href="{{function('wc_get_checkout_url')}}" class="u-btn is-black" >{{ 'Place an order' | translateString('Cart - Place an order') }}</a>
+			<a href="{{function('wc_get_cart_url')}}" class="is-cart">{{ 'Go to cart' | translateString('Cart - Go to cart') }}</a>
+		</div>
+	{% else %}
+		<p>{{ 'Cart is empty' | translateString('Cart - Cart is empty') }}</p>
+	{% endif %}	
+</div>

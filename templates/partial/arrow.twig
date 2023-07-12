@@ -1,0 +1,36 @@
+<div class="c-arrow 
+	{% if vertical %} is-vertical {% endif %} 
+	{% if big %} is-big {% endif %}
+	{% if medium %} is-medium {% endif %}
+	{% if small %} is-small {% endif %}"
+>
+	<div class="c-arrow__prev js-prev">
+		{% if small %}
+			<svg width="61px" height="19px" class="c-arrow__next is-next">
+        <use xlink:href="#small-arrow"></use>
+      </svg>
+		{% else %}
+			<svg width="22px" height="13px" class="c-arrow__angle">
+      	<use xlink:href="#arrow"></use>
+    	</svg>
+			<span class="c-arrow__line"></span>	
+		{% endif %}
+	</div>
+	
+	{% if length %}
+		<div class="c-arrow__count"></div>
+	{% endif %}
+
+	<div class="c-arrow__next js-next">
+		{% if small %}
+			<svg width="61px" height="19px" class="c-arrow__next is-next">
+        <use xlink:href="#small-arrow"></use>
+      </svg>
+		{% else %}
+			<span class="c-arrow__line"></span>
+			<svg width="22px" height="13px" class="c-arrow__angle">
+	      <use xlink:href="#arrow"></use>
+	    </svg>
+		{% endif %}	
+	</div>
+</div>

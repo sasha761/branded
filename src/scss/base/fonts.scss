@@ -1,0 +1,324 @@
+// @font-face {
+//     font-family: 'star';
+//     src: url('../fonts/star/star.eot');
+//     src: url('../fonts/star/star.eot?#iefix') format("embedded-opentype"),
+//         url('../fonts/star/star.woff') format("woff"),
+//         url('../fonts/star/star.ttf') format("truetype");
+//     font-weight: normal;
+//     font-style: normal;
+//     font-display: fallback;
+// }
+// @font-face {
+//     font-family: 'Gilroy';
+//     font-display: swap;
+//     src: url('../fonts/Gilroy/Gilroy-UltraLight.eot');
+//     src: local('Gilroy UltraLight'), local('Gilroy-UltraLight'),
+//         url('../fonts/Gilroy/Gilroy-UltraLight.eot?#iefix') format('embedded-opentype'),
+//         url('../fonts/Gilroy/Gilroy-UltraLight.woff') format('woff'),
+//         url('../fonts/Gilroy/Gilroy-UltraLight.ttf') format('truetype');
+//     font-weight: 200;
+//     font-style: normal;
+// }
+// @font-face {
+//     font-family: 'Gilroy';
+//     font-display: swap;
+//     src: url('../fonts/Gilroy/Gilroy-Light.ttf') format('truetype');
+//     font-weight: 300;
+//     font-style: normal;
+// }
+// @font-face {
+//     font-family: 'Gilroy';
+//     font-display: swap;
+//     src: url('../fonts/Gilroy/Gilroy-Regular.eot');
+//     src: local('Gilroy Regular'), local('Gilroy-Regular'),
+//         url('../fonts/Gilroy/Gilroy-Regular.eot?#iefix') format('embedded-opentype'),
+//         url('../fonts/Gilroy/Gilroy-Regular.woff') format('woff'),
+//         url('../fonts/Gilroy/Gilroy-Regular.ttf') format('truetype');
+//     font-weight: normal;
+//     font-style: normal;
+// }
+// @font-face {
+//     font-family: 'Gilroy';
+//     font-display: swap;
+//     src: url('../fonts/Gilroy/Gilroy-Medium.eot');
+//     src: local('Gilroy Medium'), local('Gilroy-Medium'),
+//         url('../fonts/Gilroy/Gilroy-Medium.eot?#iefix') format('embedded-opentype'),
+//         url('../fonts/Gilroy/Gilroy-Medium.woff') format('woff'),
+//         url('../fonts/Gilroy/Gilroy-Medium.ttf') format('truetype');
+//     font-weight: 500;
+//     font-style: normal;
+// }
+// @font-face {
+//     font-family: 'Gilroy';
+//     font-display: swap;
+//     src: url('../fonts/Gilroy/Gilroy-SemiBold.eot');
+//     src: local('Gilroy SemiBold'), local('Gilroy-SemiBold'),
+//         url('../fonts/Gilroy/Gilroy-SemiBold.eot?#iefix') format('embedded-opentype'),
+//         url('../fonts/Gilroy/Gilroy-SemiBold.woff') format('woff'),
+//         url('../fonts/Gilroy/Gilroy-SemiBold.ttf') format('truetype');
+//     font-weight: 600;
+//     font-style: normal;
+// }
+// @font-face {
+//     font-family: 'Gilroy';
+//     font-display: swap;
+//     src: url('../fonts/Gilroy/Gilroy-ExtraBold.eot');
+//     src: local('Gilroy ExtraBold'), local('Gilroy-ExtraBold'),
+//         url('../fonts/Gilroy/Gilroy-ExtraBold.eot?#iefix') format('embedded-opentype'),
+//         url('../fonts/Gilroy/Gilroy-ExtraBold.woff') format('woff'),
+//         url('../fonts/Gilroy/Gilroy-ExtraBold.ttf') format('truetype');
+//     font-weight: 800;
+//     font-style: normal;
+// }
+// @font-face {
+//     font-family: 'Gilroy';
+//     font-display: swap;
+//     src: url('../fonts/Gilroy/Gilroy-Heavy.ttf') format('truetype');
+//     font-weight: 900;
+//     font-style: normal;
+// }
+// @font-face {
+//     font-family: 'Gilroy';
+//     font-display: swap;
+//     src: url('../fonts/Gilroy/Gilroy-Bold.eot');
+//     src: local('Gilroy Bold'), local('Gilroy-Bold'),
+//         url('../fonts/Gilroy/Gilroy-Bold.eot?#iefix') format('embedded-opentype'),
+//         url('../fonts/Gilroy/Gilroy-Bold.woff') format('woff'),
+//         url('../fonts/Gilroy/Gilroy-Bold.ttf') format('truetype');
+//     font-weight: bold;
+//     font-style: normal;
+// }
+
+
+
+// @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-Light.eot');
+//     src: local('Montserrat Light'), local('Montserrat-Light'),
+//       url('../fonts/Montserrat/Montserrat-Light.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-Light.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-Light.ttf') format('truetype');
+//     font-weight: 300;
+//     font-style: normal;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-MediumItalic.eot');
+//     src: local('Montserrat Medium Italic'), local('Montserrat-MediumItalic'),
+//       url('../fonts/Montserrat/Montserrat-MediumItalic.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-MediumItalic.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-MediumItalic.ttf') format('truetype');
+//     font-weight: 500;
+//     font-style: italic;
+//   }
+  
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-ExtraLightItalic.eot');
+//     src: local('Montserrat ExtraLight Italic'), local('Montserrat-ExtraLightItalic'),
+//       url('../fonts/Montserrat/Montserrat-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-ExtraLightItalic.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-ExtraLightItalic.ttf') format('truetype');
+//     font-weight: 200;
+//     font-style: italic;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-BoldItalic.eot');
+//     src: local('Montserrat Bold Italic'), local('Montserrat-BoldItalic'),
+//       url('../fonts/Montserrat/Montserrat-BoldItalic.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-BoldItalic.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-BoldItalic.ttf') format('truetype');
+//     font-weight: bold;
+//     font-style: italic;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-SemiBold.eot');
+//     src: local('Montserrat SemiBold'), local('Montserrat-SemiBold'),
+//       url('../fonts/Montserrat/Montserrat-SemiBold.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-SemiBold.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-SemiBold.ttf') format('truetype');
+//     font-weight: 600;
+//     font-style: normal;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-ExtraLight.eot');
+//     src: local('Montserrat ExtraLight'), local('Montserrat-ExtraLight'),
+//       url('../fonts/Montserrat/Montserrat-ExtraLight.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-ExtraLight.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-ExtraLight.ttf') format('truetype');
+//     font-weight: 200;
+//     font-style: normal;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-ExtraBoldItalic.eot');
+//     src: local('Montserrat ExtraBold Italic'), local('Montserrat-ExtraBoldItalic'),
+//       url('../fonts/Montserrat/Montserrat-ExtraBoldItalic.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-ExtraBoldItalic.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-ExtraBoldItalic.ttf') format('truetype');
+//     font-weight: 800;
+//     font-style: italic;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-Italic.eot');
+//     src: local('Montserrat Italic'), local('Montserrat-Italic'),
+//       url('../fonts/Montserrat/Montserrat-Italic.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-Italic.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-Italic.ttf') format('truetype');
+//     font-weight: normal;
+//     font-style: italic;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-Bold.eot');
+//     src: local('Montserrat Bold'), local('Montserrat-Bold'),
+//       url('../fonts/Montserrat/Montserrat-Bold.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-Bold.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-Bold.ttf') format('truetype');
+//     font-weight: bold;
+//     font-style: normal;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-LightItalic.eot');
+//     src: local('Montserrat Light Italic'), local('Montserrat-LightItalic'),
+//       url('../fonts/Montserrat/Montserrat-LightItalic.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-LightItalic.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-LightItalic.ttf') format('truetype');
+//     font-weight: 300;
+//     font-style: italic;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-BlackItalic.eot');
+//     src: local('Montserrat Black Italic'), local('Montserrat-BlackItalic'),
+//       url('../fonts/Montserrat/Montserrat-BlackItalic.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-BlackItalic.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-BlackItalic.ttf') format('truetype');
+//     font-weight: 900;
+//     font-style: italic;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-SemiBoldItalic.eot');
+//     src: local('Montserrat SemiBold Italic'), local('Montserrat-SemiBoldItalic'),
+//       url('../fonts/Montserrat/Montserrat-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-SemiBoldItalic.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-SemiBoldItalic.ttf') format('truetype');
+//     font-weight: 600;
+//     font-style: italic;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-Regular.eot');
+//     src: local('Montserrat Regular'), local('Montserrat-Regular'),
+//       url('../fonts/Montserrat/Montserrat-Regular.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-Regular.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+//     font-weight: normal;
+//     font-style: normal;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-Medium.eot');
+//     src: local('Montserrat Medium'), local('Montserrat-Medium'),
+//       url('../fonts/Montserrat/Montserrat-Medium.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-Medium.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-Medium.ttf') format('truetype');
+//     font-weight: 500;
+//     font-style: normal;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-ExtraBold.eot');
+//     src: local('Montserrat ExtraBold'), local('Montserrat-ExtraBold'),
+//       url('../fonts/Montserrat/Montserrat-ExtraBold.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-ExtraBold.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-ExtraBold.ttf') format('truetype');
+//     font-weight: 800;
+//     font-style: normal;
+//   }
+  
+//   @font-face {
+//     font-family: 'Montserrat';
+//     src: url('../fonts/Montserrat/Montserrat-Black.eot');
+//     src: local('Montserrat Black'), local('Montserrat-Black'),
+//       url('../fonts/Montserrat/Montserrat-Black.eot?#iefix') format('embedded-opentype'),
+//       url('../fonts/Montserrat/Montserrat-Black.woff') format('woff'),
+//       url('../fonts/Montserrat/Montserrat-Black.ttf') format('truetype');
+//     font-weight: 900;
+//     font-style: normal;
+//   }
+
+// @font-face {
+//     font-family: 'Linearicons-Free';
+//     font-display: swap;
+//     src:url('../fonts/Linearicons/Linearicons-Free.eot?w118d');
+//     src:url('../fonts/Linearicons/Linearicons-Free.eot?#iefixw118d') format('embedded-opentype'),
+//         url('../fonts/Linearicons/Linearicons-Free.woff2?w118d') format('woff2'), 
+//         url('../fonts/Linearicons/Linearicons-Free.woff?w118d') format('woff'),
+//         url('../fonts/Linearicons/Linearicons-Free.ttf?w118d') format('truetype');
+//     font-weight: normal;
+//     font-style: normal;
+// }
+
+@font-face {
+  font-family: 'star';
+  font-display: swap;
+  src: url('../fonts/star/star.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Gilroy';
+  font-display: swap;
+  src: url('../fonts/Gilroy/Gilroy-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-display: swap;
+  src: url('../fonts/Montserrat/Montserrat-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-display: swap;
+  src: url('../fonts/Montserrat/Montserrat-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-display: swap;
+  src: url('../fonts/Montserrat/Montserrat-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Montserrat';
+  font-display: swap;
+  src: url('../fonts/Montserrat/Montserrat-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}

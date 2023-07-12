@@ -1,0 +1,303 @@
+{% extends "templates/base.twig" %}
+
+{% block content %}
+  {# {% set category  = function('get_the_category', post.ID) %} #}
+  {% set thumb     = function('get_the_post_thumbnail_url', post.ID, 'full') %}
+  {% set thumb_xl  = function('get_the_post_thumbnail_url', post.ID, 'single_xl') %}
+  {% set thumb_md  = function('get_the_post_thumbnail_url', post.ID, 'archive_xl') %}
+
+  {% set permalink = function('get_the_permalink', post.ID) %}
+
+  {% set product_data    = function('wc_get_product', post.ID) %}
+
+  {% set is_sale         = attribute(product_data, 'is_on_sale') %}
+  {% set product_price   = attribute(product_data, 'get_price_html') %}
+  {% set price_sale      = attribute(product_data, 'get_variation_sale_price') %}
+  {% set price_regular   = attribute(product_data, 'get_variation_regular_price') %}
+
+  {% set is_sale         = attribute(product_data, 'is_on_sale') %}
+  {% set outStock        = product.get_stock_status %}
+  {% set stockStatus     = outStock == 'outofstock' ? 'Out of stock' : 'In stock' %}
+
+  {% if price_sale %}
+    {% set percent = (price_regular - price_sale) / price_regular * 100 %}
+  {% endif %}
+    
+  <main 
+    class="p-product" 
+    data-id="{{post.ID}}" 
+    data-price="{{price_regular ? price_sale : price_regular}}"
+    data-categories="{{cats|join(', ')}}"
+  >
+    <div class="u-container">
+    {% if is_mobile == false %}
+      {{breadcrumbs}}
+    {% endif %}
+      <section class="l-product"> 
+        <div class="row">
+          <div class="col-lg-6 col-md-12 col-sm-12 u-col">
+            <div class="l-product__img">
+
+              {% if is_mobile == true %}
+                <div class="swiper js-product-image">
+                  <div class="swiper-wrapper">
+                    {% include 'templates/woo/single-product-thumbnail.twig' with {'video': video, 'zoom': true, 'class': 'swiper-slide'} %}
+                    {% include 'templates/woo/single-product-gallery.twig' with {'images': images, 'zoom': true, 'video': video, 'class': 'swiper-slide'} %}
+                  </div>
+
+                </div>
+                <div class="swiper-pagination"></div>
+              {% else %}
+                {% include 'templates/woo/single-product-thumbnail.twig' with {'video': video} %}
+              {% endif %}
+
+            </div>
+          </div>
+          {% if is_mobile == false %}
+            {% if other_colors %}
+              <div class="col-lg-1 col-md-6 col-sm-6 u-col d-none d-lg-block">
+                <div class="c-switch-color">
+                  <div class="c-switch-color__text">{{ 'Other colors' | translateString('Product - Other colors') }}:</div>
+                  <div class="js-vertical-slider">
+                    {% for item in other_colors|slice(0, 3) %}
+                      {% set switch_img = function('get_the_post_thumbnail_url', item.ID, 'archive_md') %}
+                      {% set switch_link = function('get_the_permalink', item.ID) %}
+                      {% set switch_color_variation = function('wc_get_product_terms', item.ID, 'pa_color') %}
+                      {% set color = function('get_term_meta', switch_color_variation[0].term_id) %}
+                      
+                      <a href="{{switch_link}}" class="c-switch-color__item">
+                        <img 
+                          src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAEALAAAAAABAAEAAAICTAEAOw=="
+                          data-src="{{switch_img|resize(300, 300)}}"
+                          alt="{{product.get_name}} - {{ switch_color_variation[0].name }}"
+                          width="215" height="215"
+                          class="lazy" 
+                        >
+                        {% if switch_color_variation %}
+                          <span class="c-switch-color__item-color">
+                            <span class="is-color" style="background-color: {{color.product_attribute_color[0]}}"></span>
+                            <span>{{ switch_color_variation[0].name }}</span>
+                          </span>
+                        {% endif %}
+                      </a>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+          <div class="col-lg-5 col-md-12 u-col">
+            <div class="l-product__content">
+              {% if is_mobile == true %}
+                {{breadcrumbs}}
+              {% endif %}
+              {{ function('woocommerce_output_all_notices') }}
+              {{ function('woocommerce_template_single_rating') }}
+              
+              {% for item in attr.brand %}
+                {% set brandlink = function('get_category_link', item.term_id) %}
+                <a href="{{brandlink}}" class="l-product__category">{{item.name}}</a>
+              {% endfor %}
+
+              <h1 class="l-product__name">{{product.get_name}}</h1>
+
+              <p class="c-price">
+                <span>{{prices.price_html}}</span>
+              </p>
+
+              {% if size_chart_desktop %}
+                <p 
+                  data-modal="#size-chart" 
+                  class="l-product__size-chart">
+                  {{ 'Size chart' | translateString('Product - Size chart') }}
+                </p>
+              {% endif %}
+
+              {# {{ function('woocommerce_template_single_add_to_cart') }} #}
+
+              <form 
+                class="js-product-form cart c-product-form variations_form" 
+                action="{{permalink}}" 
+                method="post" 
+                enctype="multipart/form-data" 
+                data-product_id="{{post.ID}}" 
+                data-product_variations="{{variation_attr}}" >
+                <div class="variations woo-variation-items-wrapper">
+                  {% for key, attr_type in variations_attributes %}
+                    <div class="c-product-form__size">
+                      <div class="label">
+                        <label for="{{ function('sanitize_title', key) }}">
+                          {{ function('wc_attribute_label', key) }}
+                        </label>
+                      </div>
+                    </div>
+                    <div class="value woo-variation-items-wrapper">
+                      {{ function('wc_dropdown_variation_attribute_options', {'options': attr_type, 'attribute': key, 'product': product} ) }}
+                    </div>  
+                  {% endfor %}
+
+                  <div class="js-product-form-notification"></div>
+                </div>
+
+                {# {% if outStock != 'outofstock' %} #}
+                  <div class="single_variation_wrap">
+                    {{ function('woocommerce_single_variation') }}
+
+                    <div class="woocommerce-variation-add-to-cart variations_button">
+
+                      <input type="hidden" class="qty" name="quantity" value="1">
+                      <input type="hidden" name="add-to-cart" value="{{post.ID}}">
+                      <input type="hidden" name="product_id" value="{{post.ID}}">
+                      <input type="hidden" name="variation_id" class="variation_id" value="0">
+
+                      <div class="c-product-form__btn">
+                        {% if outStock == 'outofstock' %}
+                          <div class="l-product__manage-stock u-h3 is-red">{{ 'Out of stock' | translateString('Product - Out of stock') }}</div>
+                        {% else %}  
+                          <button 
+                            type="submit" 
+                            {% if outStock == 'outofstock' %} disabled {% endif %} 
+                            class="u-btn is-medium is-black single_add_to_cart_button button {% if outStock == 'outofstock' %} disabled {% endif %}" 
+                            name="add-to-cart" 
+                            value="{{post.ID}}"
+                          >
+                              <span>{{ 'Add to cart' | translateString('buttons - Add to cart') }}</span>
+                          </button>
+
+                          <button 
+                            type="button" 
+                            {% if outStock == 'outofstock' %} disabled {% endif %} 
+                            class="u-btn is-medium is-black-border js-quick-add-to-card is-disabled" 
+                            data-modal="#quick-buy"
+                          >
+                              <span>{{ 'Buy in 1 click' | translateString('buttons - Buy in 1 click') }}</span>
+                          </button>
+                        {% endif %}  
+                      </div>
+                    </div>
+                  </div>
+                {# {% endif %}   #}
+              </form>
+              <div class="l-product__text">
+                <h4 class="l-product__text-title">{{ 'Description' | translateString('Product - Description') }}:</h4>
+                {% if product.get_sku %}
+                  <span>{{ 'SKU' | translateString('Product - SKU') }}: </span>
+                  <span>{{product.get_sku}}</span>
+                {% endif %}
+                {{ product.get_short_description|wpautop }}
+                <br>
+              </div>
+
+              {% include 'templates/partial/product-info-accordion.twig' with {'product_info': product_info} %}
+              
+            </div>
+          </div>
+        </div>
+        {% if is_mobile == false %}
+          <div class="row d-none d-lg-flex">
+            {% include 'templates/woo/single-product-gallery.twig' with {'images': images, 'video': video, 'col': true} %}
+          </div>
+        {% endif %}  
+      </section>
+    </div>
+
+    {% if is_mobile == true %}
+      {% if other_colors %}
+        <section class="l-switch-color">
+          {# <div class="u-container"> #}
+            <div class="c-switch-color">
+              <div class="c-switch-color__text">{{ 'Other colors' | translateString('Product - Other colors') }}:</div>
+
+              {% for item in other_colors %}
+                {% set switch_img     = function('get_the_post_thumbnail_url', item.ID, 'archive_md') %}
+                {% set switch_link = function('get_the_permalink', item.ID) %}
+                {% set switch_color_variation = function('wc_get_product_terms', item.ID, 'pa_color') %}
+                {% set color = function('get_term_meta', switch_color_variation[0].term_id) %}
+                
+                <a href="{{switch_link}}" class="c-switch-color__item">
+                  <img 
+                    class="lazy"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAEALAAAAAABAAEAAAICTAEAOw==" 
+                    data-src="{{switch_img|resize(300, 300)}}"
+                    alt="{{product.get_name}} - {{ switch_color_variation[0].name }}"
+                    width="230" 
+                    height="230"
+                  >
+                  {% if switch_color_variation %}
+                    <span class="c-switch-color__item-color">
+                      <span class="is-color" style="background-color: {{color.product_attribute_color[0]}}"></span>
+                      <span>{{ switch_color_variation[0].name }}</span>
+                    </span>
+                  {% endif %}
+                </a>
+              {% endfor %}
+            </div> 
+          {# </div> #}
+        </section>
+      {% endif %}
+    {% endif %}
+
+    {% if product.get_upsell_ids or related_products %}
+      <section class="l-related js-slider-container">
+        <div class="u-container">
+          <h2 class="u-h2">{{ 'Related products' | translateString('Product - Related products') }}</h2>
+
+          {% if product.get_upsell_ids|length >= 6 %}
+            {% include 'templates/partial/arrow.twig' with {'big': true, 'length': product.get_upsell_ids|length} %}
+          {% elseif related_products|length >= 6 %}
+            {% include 'templates/partial/arrow.twig' with {'big': true, 'length': related_products|length} %}
+          {% endif %}
+
+          <div class="js-product-row swiper">
+            
+            <div class="swiper-wrapper">
+              {% if product.get_upsell_ids %}
+                {% for id in product.get_upsell_ids %}
+                  {% set data = function('wc_get_product', id) %}
+                  <div class="u-col swiper-slide">
+                    {% include 'templates/partial/product-upsell.twig' with {'data': data, 'brand': false} %}
+                  </div>
+                {% endfor %}
+              {% elseif related_products %}
+                {% for item in related_products %}
+                  {% set id = item.ID %}
+                  {% set data = function('wc_get_product', id) %}
+                  <div class="u-col swiper-slide">
+                    {% include 'templates/partial/product-upsell.twig' with {'data': data, 'brand': false} %}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            </div>
+            
+          </div>      
+        </div>
+      </section>
+    {% endif %}
+
+
+
+    <section class="l-comments">
+      <div class="u-container">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="c-comments comment-respond" id="respond">
+              <h3 class="u-h4">{{ 'Reviews' | translateString('Product - Reviews') }}: {{fn('comments_number',__('No Responses to', 'timber-foundation'), __('One Response to', 'timber-foundation'), __('% Responses to', 'timber-foundation')) }}
+              </h3>
+              <div class="c-comments__box">
+                {% for comment in comments %}
+                  {% include 'comment.twig' %}
+                {% endfor %}
+              </div>
+              {% include "comment-form.twig" %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    {% include 'templates/partial/subscribe.twig' %}
+  
+  
+  </main>
+{% endblock  %}

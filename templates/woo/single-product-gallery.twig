@@ -1,0 +1,59 @@
+{% if is_mobile == true %}
+  {% set imgPlaceholder = 'data:image/gif;base64,R0lGODlhBAAFAIAAAP///wAAACH5BAEAAAEALAAAAAAEAAUAAAIEjI+ZBQA7' %}
+{% else %}
+  {% set imgPlaceholder = 'data:image/gif;base64,R0lGODlhBwAJAIAAAP///wAAACH5BAEAAAEALAAAAAAHAAkAAAIHjI+py+1cAAA7' %}
+{% endif %}
+
+{% if video == true %}
+  <div class="{{ col ? 'col-lg-6 u-col' : '' }} {{ class ? class : '' }}">
+    <a href="{{thumb}}" class="js-lightbox">
+      <picture>
+        {# <source srcset="{{thumb|resize(880, height, center)|tojpg}}" type="image/jpeg">  #}
+        <source
+          data-srcset="{{thumb_xl}}"
+          media="(min-width: 426px)"
+        >
+        <source
+          data-srcset="{{thumb_md}}"
+          media="(max-width: 425px)"
+        >
+        <img 
+          src="{{imgPlaceholder}}"
+          alt="{{post.post_title|replace({'"':'\''})|raw}}" 
+          title="{{post.post_title|replace({'"':'\''})|raw}}" 
+          width="840"
+          height="1080"
+          class="lazy"
+        >
+      </picture>
+    </a>
+  </div>
+{% endif %}
+{% if images %}
+  {% for id in images %}
+    {% set attach =  function('wp_get_attachment_image_src', id, 'full') %}
+    {% set attach_xl  = function('wp_get_attachment_image_src', id, 'single_xl') %}
+    {% set attach_md  = function('wp_get_attachment_image_src', id, 'archive_xl') %}
+    <div class="{{ col ? 'col-lg-6 u-col' : '' }} {{ class ? class : '' }}">
+      <a href="{{attach[0]}}" class="js-lightbox">
+        <picture class="js-lazy-load">
+          <source
+            data-srcset="{{attach_xl[0]}}"
+            media="(min-width: 426px)"
+          >
+          <source
+            data-srcset="{{attach_md[0]}}"
+            media="(max-width: 425px)"
+          >
+          <img
+            src="{{imgPlaceholder}}"
+            alt="{{ post.post_title|replace({'"':'\''})|raw }}"
+            width="840"
+            height="1080"
+            class="lazy"
+          >
+        </picture>
+      </a>
+    </div>
+  {% endfor %}
+{% endif %}

@@ -1,0 +1,50 @@
+{% extends 'templates/base.twig' %}
+{% block content %}
+
+  <main class="p-registration">
+    <div class="u-container">
+
+      <div class="c-registration-form u-relative js-registration-form">
+        <div class="c-registration-form__inner">
+          <h2> Регистрация</h2>
+          <p class="c-registration-form__error-message"></p>
+          <form>
+            <div class="c-registration-form__row">
+              <input type="text" name="nickname" required placeholder="">
+            </div>
+            <div class="c-registration-form__row">
+              <input type="email" name="email" required placeholder="">
+            </div>
+            <div class="c-registration-form__row">
+              <input type="tel" name="phone" placeholder="">
+            </div>
+            <div class="c-registration-form__row">
+              <input type="password" name="password" required placeholder="">
+            </div>
+            <div class="c-registration-form__row c-registration-form__row--privacy-policy">
+              <input type="checkbox" required>
+              <span>Я прочитал и принял политику конфиденциальности</span>
+            </div>
+            <div class="c-registration-form__row">
+              <a href="#" class="c-registration-form__forgot-password">забыл пароль?</a>
+              <button type="submit" class="u-btn is-green-clean is-small">
+                <span> Отправить </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+{% endblock %}
+
+{#
+name
+email
+phone => billing_phone
+password
+
+checkbox
+ #}

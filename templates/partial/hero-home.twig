@@ -1,0 +1,69 @@
+{% set imgPlaceholder = 'data:image/gif;base64,R0lGODlhGQALAIAAAP///wAAACH5BAEAAAEALAAAAAAZAAsAAAIOjI+py+0Po5y02ouz1gUAOw==' %}
+{% set imgSmallPlaceholder = 'data:image/gif;base64,R0lGODlhFAANAIAAAP///wAAACH5BAEAAAEALAAAAAAUAA0AAAIOjI+py+0Po5y02ouzXgUAOw==' %}
+
+<section class="l-hero">
+	<div class="u-container">					
+		<div class="row align-items-stretch">									
+			<div class="col-lg-9 col-md-12 u-col">
+				{% if data.banners %}
+					<div class="js-banner-slider swiper">
+						<div class="swiper-wrapper">
+						{% for item in data.banners %}
+							<a href="{{item.link}}" class="c-banner swiper-slide">
+								<picture>
+									<source data-srcset="{{item.img|towebp}}" type="image/webp">
+								  <source data-srcset="{{item.img|tojpg}}" type="image/jpeg"> 
+								  <img 
+								  	class="lazy"
+								  	src="{{imgPlaceholder}}" 
+								  	width="1400" 
+								  	height="616" 
+								  	alt="Branded баннер {{loop.index}}"
+							  	>
+								</picture>
+
+								{% if loop.last %}
+									<h1 class="c-banner__title">{{ 'Branded.com.ua - Online store brand clothing for men and women' | translateString('Hero-home - title') }}</h1>
+								{% endif %}
+							</a>
+						{% endfor %}
+						</div>
+					</div>
+				{% endif %}
+			</div>
+				
+			<div class="col-lg-3 col-md-12 u-col">	
+				<div class="l-hero__row-banners">	
+				 	<a href="{{site.url}}/product/steganaya-kurtka-zhenskaya-sinyaya-ot-beom/" class="c-banner">
+					 	<picture>
+							<source data-srcset="{{data.small_banner_1|resize(360, 234, 'center')|towebp}}" type="image/webp">
+						  <source data-srcset="{{data.small_banner_1|resize(360, 234, 'center')|tojpg}}" type="image/jpeg"> 
+						  <img 
+						  	class="lazy"
+						  	src="{{imgSmallPlaceholder}}" 
+						  	data-src="{{data.small_banner_1|resize(360, 234, 'center')|towebp}}" 
+						  	width="360" 
+						  	height="234" 
+						  	alt="Куртка женская синяя от BeOm"
+					  	>
+						</picture>
+				 	</a>
+					<a href="{{site.url}}/product/svitshot-zhenskij-s-printami-gorodov-ukrainy-bezhevyj-ot-beom/" class="c-banner">
+						<picture>
+							<source data-srcset="{{data.small_banner_2|resize(360, 234, 'bottom')|towebp}}" type="image/webp">
+						  <source data-srcset="{{data.small_banner_2|resize(360, 234, 'bottom')|tojpg}}" type="image/jpeg"> 
+						  <img 
+						  	class="lazy"
+						  	src="{{imgSmallPlaceholder}}" 
+						  	data-src="{{data.small_banner_2|resize(360, 234, 'bottom')|towebp}}" 
+						  	width="360" 
+						  	height="234" 
+						  	alt="Свитшот женский с принтами городов Украины"
+					  	>
+						</picture>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>							
+</section>

@@ -1,0 +1,245 @@
+<div class="l-modal-container">
+	
+	{% if is_mobile == true %}
+		<div class="c-modal c-mobile-menu is-more" id="mobile-menu-more">
+			<div class="c-modal__title">
+				<h3 class="u-h3">{{ 'Menu' | translateString('Modals - Menu') }}</h3>
+				<svg width="20px" height="20px" data-modal="close">
+	        <use xlink:href="#icon-close"></use>
+	      </svg>
+			</div>
+
+			<ul>
+				<li class="c-mobile-menu__link">
+					<svg width="20px" height="20px">
+		        <use xlink:href="#shipping-store"></use>
+		      </svg>
+		      <a href="{{site.url}}">{{ 'Main page' | translateString('Modals - Main page') }}</a>
+				</li>
+				<li class="c-mobile-menu__link">
+					<svg width="20px" height="20px">
+		        <use xlink:href="#info"></use>
+		      </svg>
+		      <a href="{{site.url}}/about-us">{{ 'About us' | translateString('Modals - About us') }}</a>
+				</li>
+				<li class="c-mobile-menu__link">
+					<svg width="20px" height="25px">
+		        <use xlink:href="#open-box-checked"></use>
+		      </svg>
+		      <a href="{{site.url}}/dostavka-i-oplata">{{ 'Delivery and payment' | translateString('Modals - Delivery and payment') }}</a>
+				</li>
+				<li class="c-mobile-menu__link">
+					<svg width="20px" height="25px">
+		        <use xlink:href="#open-box"></use>
+		      </svg>
+		      <a href="{{site.url}}/vozvrat-i-obmen">{{ 'Returns and exchanges' | translateString('Modals - Returns and exchanges') }}</a>
+				</li>
+				<li class="c-mobile-menu__link">
+					<svg width="21px" height="20px" class="is-phone">
+		        <use xlink:href="#icon-phone"></use>
+		      </svg>
+		      <a href="tel:{{ options.social.phone }}">{{ 'Call us' | translateString('Modals - Call us') }}</a>
+				</li>
+				<li class="c-mobile-menu__link">
+					<svg width="17px" height="20px">
+		        <use xlink:href="#coment"></use>
+		      </svg>
+					<a href="{{site.url}}/reviews">{{ 'Reviews' | translateString('Modals - Reviews') }}</a>
+				</li>
+			</ul>
+			{% include 'templates/search-form.twig' %}
+		</div>
+
+		<div class="c-modal is-search" id="mobile-search">
+			{# {% include 'templates/search-form.twig' %} #}
+			<form role="search" method="get" id="searchform" class="c-search" action="{{site.link}}">
+				<button type="submit" class="c-search__button">
+					<svg width="15px" height="17px" class="is-search">
+			      <use xlink:href="#search"></use>
+			    </svg>
+			  </button>
+			  <input type="text" value="{{ function('get_search_query') }}" placeholder="{{ 'Search' | translateString('input - Search') }}" name="s" id="s" />
+			  <button type="submit" class="c-search__submit">
+					<svg width="18px" height="14px" class="is-search">
+			      <use xlink:href="#big-arrow"></use>
+			    </svg>
+			  </button>
+			</form>
+		</div>
+
+		<div class="c-modal is-filter" id="filter">
+			<div class="c-modal__title">
+				<p class="u-h3">{{ 'All filters' | translateString('Modals - All filters') }}</p>
+				<svg width="20px" height="20px" data-modal="close">
+	        <use xlink:href="#icon-close"></use>
+	      </svg>
+			</div>
+			
+			{% include 'templates/partial/sidebar.twig' %}
+			{# {% include 'templates/partial/filter.twig' %} #}
+		</div>
+
+		<div class="c-modal c-mobile-menu js-tab-mobile-menu" id="mobile-menu">
+			<div class="c-tab">
+				<div class="c-tab__nav">
+					<span data-tab="#wooman" class="c-tab__item is-active">{{ 'For her' | translateString('Modals - For her') }}</span>
+					<span data-tab="#man" class="c-tab__item">{{ 'For him' | translateString('Modals - For him') }}</span>
+					{# <span data-tab="#child" class="c-tab__item">{{ 'For kids' | translateString('Modals - For kids') }}</span> #}
+					{# <span data-tab="#brands" class="c-tab__item">Бренды</span> #}
+					
+					<span class="js-mobile-menu-back">
+						<svg width="28px" height="28px">
+							<use xlink:href="#left_arrow"></use>
+						</svg>
+					</span>
+					<svg width="20px" height="20px" data-modal="close" class="c-mobile-menu__close">
+		        <use xlink:href="#icon-close"></use>
+		      </svg>
+				</div>
+				<div class="c-tab__container">
+					<div id="wooman" class="c-tab__content is-active">
+						<div class="c-mobile-menu__cat">
+							{% include 'templates/menu-mobile.twig' with {'menu': mobile_menu_wooman.get_items} %}
+						</div>
+					</div>
+					<div id="man" class="c-tab__content">
+						<div class="c-mobile-menu__cat">
+							{% include 'templates/menu-mobile.twig' with {'menu': mobile_menu_man.get_items} %}
+						</div>
+					</div>
+					{# <div id="child" class="c-tab__content">
+						<div class="c-mobile-menu__cat">
+							{% include 'templates/menu-mobile.twig' with {'menu': mobile_menu_child.get_items} %}
+						</div>
+					</div> #}
+					{# <div id="brands" class="c-tab__content">
+						<div class="c-mobile-menu__cat">
+							{% include 'templates/menu-mobile.twig' with {'menu': mobile_menu_brands.get_items} %}
+						</div>
+					</div> #}
+				</div>
+			</div>
+		</div>
+	{% endif %}	
+		
+	<div class="c-modal c-modal__lang js-modal-lang" id="modal-lang">
+		<div data-modal="close" class="c-modal__close">
+			<svg width="20px" height="20px" >
+	      <use xlink:href="#icon-close"></use>
+	    </svg>
+    </div>
+		<div class="row">
+			<div class="col-sm-6 col-12">
+				<div class="c-flag-uk">
+					<span class="c-flag-uk__blue"></span>
+					<span class="c-flag-uk__yellow"></span>
+				</div>
+			</div>
+			<div class="col-sm-6 col-12">
+				<div class="c-modal__lang-box is-first">
+					<span class="c-modal__lang-subtitle">Мова сайту</span>
+					<p class="c-modal__lang-title">Встановити українську за замовчуванням?</p>
+
+					<button class="u-btn is-black" data-lang="uk">Підтвердити</button>
+					<span class="c-modal__lang-change js-modal-change-lang">Змінити мову сайту</span>
+				</div>
+
+				<div class="c-modal__lang-box is-second">
+					<span class="c-modal__lang-subtitle">Мова сайту</span>
+					<p class="c-modal__lang-title">Будь ласка, оберіть мову сайту</p>
+
+					<button class="u-btn is-black" data-lang="uk">Українська</button>
+					<button class="u-btn" data-lang="ru">російська</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<span data-modal="#modal-lang" class="d-none"></span>
+
+	{% if fn('is_product') %}
+		<div class="c-modal is-lightbox js-lightbox-modal" id="lightbox">
+			<p class="d-block d-sm-none is-lightbox-notification">{{ 'Scale a photo with a pinch and spread gesture' | translateString('Modals - Scale a photo') }}</p>
+			<div class="c-load-icon js-load-more-icon">
+				<svg width="30px" height="30px" class="c-load">
+	        <use xlink:href="#icon-load"></use>
+	      </svg>
+			</div>
+			
+			<div data-modal="close" class="c-modal__close">
+				<svg width="20px" height="20px" >
+		      <use xlink:href="#icon-close"></use>
+		    </svg>
+	    </div>
+		</div>
+		<span data-modal="#lightbox" class="d-none"></span>
+
+		{% if size_chart_desktop %}
+			<div class="c-modal is-size-chart js-modal-size-chart" id="size-chart">
+				<div data-modal="close" class="c-modal__close">
+					<svg width="20px" height="20px" >
+			      <use xlink:href="#icon-close"></use>
+			    </svg>
+		    </div>
+		    {% if is_mobile == true %}
+		    	<img 
+		    		class="lazy"
+	          src="data:image/png;base64,TEVITGhbV0IyeWs4cHlvSmFkUiouN2tDTWRuag==" 
+	          data-src="{{size_chart_mobile}}"
+						alt="Размерная таблица бренда: {{attr.brand[0].name}}"
+					>
+		    {% else %}
+		    	<img 
+		    		class="lazy"
+	          src="data:image/png;base64,TEVITGhbV0IyeWs4cHlvSmFkUiouN2tDTWRuag==" 
+		    		data-src="{{size_chart_desktop}}" 
+		    		alt="Размерная таблица бренда: {{attr.brand[0].name}}"
+	    		>
+		    {% endif %}
+			</div>
+		{% endif %}
+	
+
+		<div class="c-modal is-quick-buy js-quick-buy-modal" id="quick-buy">
+			<svg width="20px" height="20px" data-modal="close" class="c-modal__close">
+	      <use xlink:href="#icon-close"></use>
+	    </svg>
+			<form class="c-form js-quick-buy-form" name="quick-buy">
+				<div class="c-input">
+					<input type="text" required placeholder="{{ 'Name' | translateString('input - Name') }}" name="name">
+				</div>
+				<div class="c-input">
+					<input type="text" required placeholder="{{ 'Surname' | translateString('input - Surname') }}" name="surname">
+				</div>
+				<div class="c-input">
+					<input type="tel" required placeholder="{{ 'Phone' | translateString('input - Phone') }}" name="phone">
+				</div>
+				<div class="c-input">
+					<input type="email" required placeholder="Email" name="email">
+				</div>
+				<div class="c-input">
+					<input type="text" required placeholder="{{ 'City' | translateString('input - City') }}" name="city">
+				</div>
+				<div class="c-input">
+					<input type="text" required placeholder="{{ 'Post Office' | translateString('input - Post Office') }}" name="address">
+				</div>
+
+				{# <input type="hidden" name="action" value="quickBuy"> #}
+				<input type="hidden" name="product_id" value="{{post.ID}}">
+				<input type="hidden" name="variation_id" class="js-quick-buy-variation" value="0">
+
+				<div class="c-form__submit">
+					<button type="submit" name="quick-buy-submit" class="u-btn is-black is-medium js-quick-buy">{{ 'Send' | translateString('buttons - Send') }}</button>
+				</div>
+				<div class="c-load-icon js-load-more-icon">
+	        <span class="c-spinner">
+	          <span></span>
+	          <span></span>
+	          <span></span>
+	        </span>
+	      </div>
+				<div class="js-form-answer"></div>
+			</form>
+		</div>
+	{% endif %}
+</div>
+

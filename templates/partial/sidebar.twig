@@ -1,0 +1,29 @@
+<aside class="l-sidebar js-accordion">
+  {% for key, sidebar_list in sidebar %}
+    <div class="l-sidebar__block js-accordion__item {% if query_object.parent == sidebar_list[1] or query_object.term_id == sidebar_list[1] %} is-active {% endif %}">
+      <h4 class="l-sidebar__title js-accordion__heading">
+        <span>{{key}}</span>
+        <svg width="11px" height="7px" class="u-arrow">
+          <use xlink:href="#arrow"></use>
+        </svg>
+      </h4>
+      <ul class="l-sidebar__list js-accordion__list">
+        {% for item in sidebar_list[0] %}
+          {% set permalink = function('get_category_link', item.term_id) %}
+          <li>
+            <a href="{{permalink}}">{{item.name}}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+
+  <div class="l-sidebar__block ">
+    <h4 class="l-sidebar__title ">
+      <span>{{ 'Filters' | translateString('Sidebar - Filters') }}</span>
+    </h4>
+    {# <div class="l-sidebar__list"> #}
+      {% include 'templates/partial/filter.twig' %}
+    {# </div> #}
+  </div>
+</aside>

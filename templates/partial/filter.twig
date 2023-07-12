@@ -1,0 +1,17 @@
+<div class="l-filter">
+  {% if query_object.taxonomy == "product_cat" or query_object.taxonomy == "pa_brand" %}
+
+    {{sidebar_widget}}
+
+  {% endif %} 
+</div>
+
+{#
+?orderbye=
+- menu_order
+- popularity
+- rating
+- date
+- price
+- price-desc
+#}
