@@ -40,11 +40,11 @@ class BrandedSite {
     wp_enqueue_style( 'vue-css', get_stylesheet_directory_uri() . '/dist/js/main.css', null,  _S_VERSION );
   }
 
-  public function widgets_init() {
-    require_once get_template_directory() . '/widgets/class-wc-widget-layered-nav.php';
-    unregister_widget( 'WC_Widget_Layered_Nav' );
-    register_widget( 'My_WC_Widget_Layered_Nav' );
-  }
+  // public function widgets_init() {
+  //   require_once get_template_directory() . '/widgets/class-wc-widget-layered-nav.php';
+  //   unregister_widget( 'WC_Widget_Layered_Nav' );
+  //   register_widget( 'My_WC_Widget_Layered_Nav' );
+  // }
 }
 
 new BrandedSite();

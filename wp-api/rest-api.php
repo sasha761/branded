@@ -2,12 +2,12 @@
 add_action( 'rest_api_init', function () {
   $namespace = '/api/archive';
   register_rest_route( $namespace, '/get_products', [
-    'methods' => 'GET',
+    'methods' => 'GET, POST',
     'callback' => 'get_products_feed'
   ]);
 });
 
-function get_products_feed(WP_REST_Request $request) {
+function get_products_feed() {
 
   $posts = get_posts( array(
     'post_type'   => 'product',
@@ -28,7 +28,7 @@ function get_products_feed(WP_REST_Request $request) {
     )
   ) );
 
-  $posts_info = [];
+  $post_info = [];
 
   foreach($posts as $key => $post) {
     $product = wc_get_product($post->ID);
@@ -41,4 +41,6 @@ function get_products_feed(WP_REST_Request $request) {
   }
 
   echo json_encode($post_info);
+
+  // var_dump($post_info);
 }

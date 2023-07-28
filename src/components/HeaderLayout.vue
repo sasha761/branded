@@ -48,7 +48,14 @@
               </button>
               <input type="hidden" name="post_type" value="product" />
               <input type="hidden" name="type_aws" value="true" />
-              <input type="text" value="" placeholder="Поиск" name="s" id="s" />
+              <input
+                type="text"
+                v-model="search"
+                placeholder="Поиск"
+                name="s"
+                id="s"
+                v-on:input="handleSearch"
+              />
             </form>
           </div>
           <div class="c-service cart d-none d-sm-block">
@@ -107,3 +114,31 @@
     </div>
   </header>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      search: ''
+    }
+  },
+
+  props: {
+    products: {
+      type: Object,
+      required: false,
+      default: false
+    }
+  },
+  methods: {
+    handleSearch() {
+      // const searchResults = Object.values(this.products).filter(item =>
+      //   item.post_title.toLowerCase().includes(this.search.toLowerCase())
+      // );
+
+      this.$emit('search-product', this.search)
+      
+    }
+  }
+}
+</script>

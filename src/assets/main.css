@@ -4508,8 +4508,8 @@ p.stars.selected a:not(.active):before {
 
 .l-modal-container {
   z-index: 10;
-  visibility: hidden;
-  opacity: 0;
+  /* visibility: hidden;
+  opacity: 0; */
   background-color: #fff;
   transition: all .2s;
   position: fixed;
@@ -4535,8 +4535,8 @@ p.stars.selected a:not(.active):before {
 }
 
 .l-modal-container .c-modal {
-  opacity: 0;
-  visibility: hidden;
+  /* opacity: 0;
+  visibility: hidden; */
   z-index: 21;
   background-color: #fff;
   padding: 0 15px;
