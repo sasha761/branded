@@ -38,3 +38,4 @@ dist/
 composer.lock
 /languages
 /vendor
+vendor/
