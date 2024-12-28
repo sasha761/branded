@@ -12,14 +12,12 @@
   "license": "GPL-2.0-or-later",
   "authors": [
     {
-        "name": "Contributors",
-        "homepage": "https://branded.com.ua/"
+      "name": "Contributors",
+      "homepage": "https://branded.com.ua/"
     }
   ],
   "require": {
-    "php": ">=7.4||^8.0",
-    "twig/twig": "^3.0",
-    "timber/timber": "2.x-dev"
+    "timber/timber": "^2.3.1"
   },
   "support": {
     "issues": "https://t.me/Branded_own"

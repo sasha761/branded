@@ -55,7 +55,7 @@ if ( is_singular( 'product' ) ) {
 
   // Variations
   if ($product->is_type( 'variable' )) {
-    wp_enqueue_script( 'wc-add-to-cart-variation' );
+    // wp_enqueue_script( 'wc-add-to-cart-variation' );
     $variations = $product->get_available_variations();
 
     $variations_json = wp_json_encode( $variations );
@@ -76,17 +76,25 @@ if ( is_singular( 'product' ) ) {
   $color = wc_get_product_terms( $product->get_id(), 'pa_color', array() ); 
 
   $context['attr'] = [
-    'brand' => $brand,
-    'size' => $size,
-    'color' => $size,
+    'brand' => ! empty( $brand ) ? $brand : '',
+    'size'  => ! empty( $size ) ? $size : '',
+    'color' => ! empty( $color ) ? $color : '',
   ];
 
-  $attachment_ids     = $product->get_gallery_image_ids();
-  $context['images']  = $attachment_ids;
+  // Получаем ID изображений галереи товара.
+  $attachment_ids    = $product->get_gallery_image_ids();
+  $context['images'] = ! empty( $attachment_ids ) ? $attachment_ids : [];
 
-  $context['size_chart_desktop'] = get_field('size_chart_desktop', $brand[0]);
-  $context['size_chart_mobile'] = get_field('size_chart_mobile', $brand[0]);
-  $context['product_info'] = get_field('product_info', $brand[0]);
+  if ( ! empty( $brand ) && isset( $brand[0] ) ) {
+    $context['size_chart_desktop'] = get_field( 'size_chart_desktop', $brand[0] );
+    $context['size_chart_mobile']  = get_field( 'size_chart_mobile', $brand[0] );
+    $context['product_info']       = get_field( 'product_info', $brand[0] );
+  } else {
+    // Если не найдено ни одного термина или ACF не привязан — заполняем пустыми.
+    $context['size_chart_desktop'] = '';
+    $context['size_chart_mobile']  = '';
+    $context['product_info']       = '';
+  }
 
   $context['cats']    = [];
   // Get related products

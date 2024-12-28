@@ -65,3 +65,7 @@ Nicolas Gallagher and Jonathan Neal https://necolas.github.io/normalize.css/
 body {
 	margin: 0;
 }
+
+.c-price .screen-reader-text {
+	display: none;
+}

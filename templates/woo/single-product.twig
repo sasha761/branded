@@ -116,7 +116,7 @@
               {# {{ function('woocommerce_template_single_add_to_cart') }} #}
 
               <form 
-                class="js-product-form cart c-product-form variations_form" 
+                class="js-product-form cart c-product-form {{ variation_attr ? 'variations_form' : '' }}" 
                 action="{{permalink}}" 
                 method="post" 
                 enctype="multipart/form-data" 
@@ -167,7 +167,7 @@
                           <button 
                             type="button" 
                             {% if outStock == 'outofstock' %} disabled {% endif %} 
-                            class="u-btn is-medium is-black-border js-quick-add-to-card is-disabled" 
+                            class="u-btn is-medium is-black-border js-quick-add-to-card {{ variation_attr ? 'is-disabled' : '' }}" 
                             data-modal="#quick-buy"
                           >
                               <span>{{ 'Buy in 1 click' | translateString('buttons - Buy in 1 click') }}</span>

@@ -1,25 +1,48 @@
-import $ from "jquery";
-import jQuery from "jquery";
-// const $ = require('jquery');
-// const jQuery = require('jquery');
-window.jQuery = $;
-window.$ = $;
+jQuery(function ($) {
 
-console.log(window.jQuery);
+	// woocommerce
+	// $('body').on( 'init', '#rating', function() {
+	// 	$( '#rating' )
+	// 			.hide()
+	// 			.before(
+	// 				'<p class="stars">\
+	// 					<span>\
+	// 						<a class="star-1" href="#">1</a>\
+	// 						<a class="star-2" href="#">2</a>\
+	// 						<a class="star-3" href="#">3</a>\
+	// 						<a class="star-4" href="#">4</a>\
+	// 						<a class="star-5" href="#">5</a>\
+	// 					</span>\
+	// 				</p>'
+	// 			);
+	// 	})
+	// 	.on( 'click', '#respond p.stars a', function() {
+	// 		var $star   	= $( this ),
+	// 			$rating 	= $( this ).closest( '#respond' ).find( '#rating' ),
+	// 			$container 	= $( this ).closest( '.stars' );
+
+	// 		$rating.val( $star.text() );
+	// 		$star.siblings( 'a' ).removeClass( 'active' );
+	// 		$star.addClass( 'active' );
+	// 		$container.addClass( 'selected' );
+
+	// 		return false;
+	// 	})
+	// 	.on( 'click', '#respond #submit', function() {
+	// 		var $rating = $( this ).closest( '#respond' ).find( '#rating' ),
+	// 			rating  = $rating.val();
+
+	// 		if ( $rating.length > 0 && ! rating && wc_single_product_params.review_rating_required === 'yes' ) {
+	// 			window.alert( wc_single_product_params.i18n_required_rating_text );
+
+	// 			return false;
+	// 		}
+	// 	});
+
+	// 	$( '.wc-tabs-wrapper, .woocommerce-tabs, #rating' ).trigger( 'init' );
+
 
 	$(document).ready(function() {
-		// require('../../../../../wp-includes/js/underscore.min.js');
-		// require('../../../../../wp-includes/js/wp-util.min.js');
-		// require('../../../../../wp-includes/js/dist/vendor/wp-polyfill-inert.min.js');
-		// require('../../../../../wp-includes/js/dist/vendor/regenerator-runtime.min.js');
-		// require('../../../../../wp-includes/js/dist/vendor/wp-polyfill.min.js');
-		// require('../../../../../wp-includes/js/dist/hooks.min.js');
-		// require('../../../../../wp-includes/js/dist/i18n.min.js');
-		// require('../../../../../wp-includes/js/dist/url.min.js');
-		// require('../../../../../wp-includes/js/dist/api-fetch.min.js');
-		
-		// require('../../../../../wp-content/plugins/woo-variation-swatches/assets/js/frontend.min.js');
-
 
 		$('.js-form-register').submit(function(event) {
 		  event.preventDefault();
@@ -61,4 +84,4 @@ console.log(window.jQuery);
 
 		
 	});
-// });
+});

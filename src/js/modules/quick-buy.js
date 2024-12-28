@@ -1,6 +1,6 @@
 function quickBuy() {
 	const quickBuyForm = document.querySelector('.js-quick-buy-form');
-	const targetNode = document.querySelector('.woocommerce-variation-add-to-cart .variation_id');
+	const targetNode = document.querySelector('.variations_form .woocommerce-variation-add-to-cart .variation_id');
   const quickBuyBtn = document.querySelector('.js-quick-add-to-card');
   const notification = document.querySelector('.js-product-form-notification');
 
@@ -22,7 +22,6 @@ function quickBuy() {
 
   buttonFn();
   
-
   if (targetNode) {
     const config = { attributes: true };
     const callback = (mutationList, observer) => {
@@ -71,8 +70,6 @@ function quickBuy() {
       body: params,
     });
     const result = await response.json();
-
-    // console.log(result);
 
     quickBuyForm.querySelector('.js-load-more-icon').classList.remove('is-show');
 

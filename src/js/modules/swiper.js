@@ -1,19 +1,22 @@
-import Swiper from '../../../node_modules/swiper/swiper-bundle';
-// import Swiper, { Navigation, Pagination } from 'swiper';
+import Swiper from 'swiper';
+import { Navigation, Pagination, Autoplay, Zoom, FreeMode} from 'swiper/modules';
 
-function swiperFn() {
+
+export const initHeroSlider = () => {
 	const bannerSlider = document.querySelectorAll('.js-banner-slider');
-	const productSlider = document.querySelectorAll('.js-product-row');
-	const productImageSlider = document.querySelectorAll('.js-product-image');
 
 	if (bannerSlider.length) {
 		bannerSlider.forEach(slider => {new Swiper(slider)})
 	}
+}
+
+export const initProductGallerySlider = () => {
+	const productImageSlider = document.querySelectorAll('.js-product-image');
 
 	if (productImageSlider.length && window.innerWidth <= 991) {
-		
 		productImageSlider.forEach(slider => {
 			new Swiper(slider, {
+				modules: [Navigation, Pagination, Autoplay, Zoom, FreeMode],
 				watchOverflow: true,
 				spaceBetween: 7,
 				autoHeight: false,
@@ -26,28 +29,30 @@ function swiperFn() {
 					disableOnInteraction: true,
 				},
 				pagination: {
-	        el: ".swiper-pagination",
-	        clickable: true,
-	        // type: "progressbar",
-	      },
+					el: ".swiper-pagination",
+					clickable: true,
+				},
 				breakpoints: {
-			    320: {
-			      slidesPerView: 1,
-			    },
-			    576: {
-			    	slidesPerView: 'auto',
-			      freeMode: {
-					    enabled: true,
-					    sticky: true,
-					  },
-			    }
-			  }
+					320: {
+						slidesPerView: 1,
+					},
+					576: {
+						slidesPerView: 'auto',
+						freeMode: {
+							enabled: true,
+							sticky: true,
+						},
+					}
+				}
 			});
 		});
 	}
+}
+
+export const initProductRowSlider = () => {
+	const productSlider = document.querySelectorAll('.js-product-row');
 
 	if (productSlider.length) {
-
 		productSlider.forEach(slider => {
 			let sliderContainer = slider.closest('.js-slider-container');
 			let sliderArrows = sliderContainer.querySelector('.c-arrow');
@@ -63,11 +68,12 @@ function swiperFn() {
 				}
 				countArrows = {
 					el: countEl,
-	        type: "fraction",
+					type: "fraction",
 				}
 			}
 
 			new Swiper(slider, {
+				modules: [Navigation, Pagination, Autoplay],
 				slidesPerView: 'auto',
 				watchOverflow: true,
 				autoplay: {
@@ -80,6 +86,5 @@ function swiperFn() {
 			})
 		})
 	}
-};
+}
 
-export default swiperFn;

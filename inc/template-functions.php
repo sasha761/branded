@@ -42,38 +42,30 @@ function custom_dequeue() {
   wp_dequeue_style('wpml-blocks');
   wp_deregister_style('wpml-blocks');
 
+  wp_dequeue_style('wpml-legacy-horizontal-list-0');
+  wp_deregister_style('wpml-legacy-horizontal-list-0');
+  wp_dequeue_style('wcml-dropdown-0');
+  wp_deregister_style('wcml-dropdown-0');
   
-  // wp_deregister_script( 'jquery' );
-  wp_deregister_script( 'wc-single-product' );
-  wp_deregister_script( 'woocommerce' );
+  
   wp_deregister_script( 'wc-cart-fragments' );
   wp_deregister_script( 'aws-script' );
   wp_deregister_script( 'comment-reply' );
 
-  wp_deregister_script( 'woo-tracks' );
-  wp_deregister_script( 'wcml-front-scripts' );
+  wp_deregister_script( 'jquery-migrate' );
+  wp_deregister_script( 'jquery-core' );
+  wp_deregister_script( 'jquery-blockui' );
+
+  wp_deregister_script( 'wc-add-to-cart' );
+  wp_deregister_script( 'wc-single-product' );
+  wp_deregister_script( 'woocommerce' );
+
   wp_deregister_script( 'cart-widget' );
+  wp_deregister_script( 'wcml-mc-scripts' );
+  wp_deregister_script( 'sourcebuster-js' );
+  wp_deregister_script( 'wc-order-attribution' );
 
-  // wp_deregister_script( 'wc-add-to-cart-variation' );
-
-  wp_deregister_script( 'selectWoo' );
-  // wp_deregister_script( 'underscore' );
-  // wp_deregister_script( 'jquery-blockui' );
-  // wp_deregister_script( 'wp-api-request' );
-  // wp_deregister_script( 'wp-polyfill-inert' );
-  // wp_deregister_script( 'regenerator-runtime' );
-  // wp_deregister_script( 'wp-polyfill' );
-  // wp_deregister_script( 'wp-hooks' );
-  // wp_deregister_script( 'wp-i18n' );
-  // wp_deregister_script( 'wp-url' );
-  // wp_deregister_script( 'wp-api-fetch' );
-  // wp_deregister_script( 'wp-util' );
-  // wp_deregister_script( 'wp-util-js-extra' );
-  
-
-
-  // wp_deregister_script( 'woo-variation-swatches' );
-  // wp_deregister_script( 'jquery-migrate' );
+  wp_deregister_script( 'wpml-legacy-dropdown-0' );
 }
 
 add_action( 'wp_enqueue_scripts', 'custom_dequeue', 9999 );

@@ -50,7 +50,6 @@ export default class select {
 		});
 
 		this.niceSelectHTML = document.querySelectorAll('.nice-select');
-		// console.log(this.niceSelectHTML);
 	}
 
 	close() {

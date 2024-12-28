@@ -12,9 +12,6 @@ License URI: LICENSE
 Text Domain: news
 */
 
-// @import '../../node_modules/jquery-nice-select/css/nice-select.css';
-// @import 'vendor/nice-select.css';
-// @import 'vendor/swiper-bundle.css';
 
 @import 'vendor/style.scss';
 @import 'utility/style.scss';
@@ -22,6 +19,10 @@ Text Domain: news
 @import 'components/style.scss';
 @import 'layout/style.scss';
 @import 'page/style.scss';
+
+@import '../../node_modules/swiper/swiper.css';
+@import '../../node_modules/swiper/modules/free-mode.css';
+@import '../../node_modules/swiper/modules/navigation.css';
 
 
 img.lazy {

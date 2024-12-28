@@ -118,7 +118,6 @@ function loadMore() {
       });
 
       const result = await response.json();
-      // console.log(result);
       if (result.products === 'nomore') {
         document.querySelector('.l-shop__product .js-load-more-icon').classList.remove('is-show');
         loadMoreBtn.style.display = 'none';  

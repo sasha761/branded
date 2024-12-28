@@ -4,10 +4,11 @@ function GA_add_to_cart() {
   const catTag       = document.querySelector('[data-categories]').getAttribute('data-categories');
   const button       = document.querySelector(".js-product-form .single_add_to_cart_button");
   
+  
   if (button) {
     let productsGA4 = [];
 
-    button.addEventListener('click', (event) => {
+    button.addEventListener('click', () => {
       if (!button.classList.contains('disabled')) {
         
         let categories = {};
@@ -20,11 +21,14 @@ function GA_add_to_cart() {
           }
         });
 
+        const item_brand  = document.querySelector('.l-product__category')?.textContent;
+        const item_id = document.querySelector('.js-product-form')?.getAttribute('data-product_id');
+        const item_name = document.querySelector('.l-product__name')?.textContent;
         productsGA4[0] = {
-          'item_name': document.querySelector('.l-product__name').textContent,
-          'item_id': document.querySelector('.js-product-form').getAttribute('data-product_id'),
+          'item_name': item_name,
+          'item_id': item_id,
           'price': productPrice,
-          'item_brand': document.querySelector('.l-product__category').textContent,
+          'item_brand': item_brand,
           'quantity': 1
         }
         Object.assign(productsGA4[0], categories);
@@ -37,8 +41,6 @@ function GA_add_to_cart() {
             'items': productsGA4
           }
         });
-
-        // console.log(dataLayer);
       }
     });
   }
@@ -79,13 +81,17 @@ function GA_view_item() {
     }
   });
 
+  const item_brand  = document.querySelector('.l-product__category')?.textContent?.trim();
+  const item_id = document.querySelector('.js-product-form')?.getAttribute('data-product_id');
+  const item_name = document.querySelector('.l-product__name')?.textContent?.trim();
   productsGA4[0] = {
-    'item_name': document.querySelector('.l-product__name').textContent,
-    'item_id': document.querySelector('.js-product-form').getAttribute('data-product_id'),
+    'item_name': item_name,
+    'item_id': item_id,
     'price': productPrice,
-    'item_brand': document.querySelector('.l-product__category').textContent,
+    'item_brand': item_brand,
     'quantity': 1
   }
+
   Object.assign(productsGA4[0], categories);
 
   window.dataLayer = window.dataLayer || [];       
@@ -97,7 +103,6 @@ function GA_view_item() {
     }
   });
 
-  // console.log(dataLayer);
 }
 
 function GA_view_item_list() {
@@ -147,7 +152,6 @@ function GA_view_item_list() {
       }
     });
 
-    // console.log(dataLayer);
   }
 }
 
@@ -191,7 +195,6 @@ function GA_select_item() {
           }
         });
 
-        // console.log(dataLayer);
       });
     });
   }
@@ -247,7 +250,6 @@ function GA_purchase() {
       }
     });
 
-    // console.log(dataLayer);
   }
 }
 export {

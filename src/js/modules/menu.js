@@ -1,8 +1,8 @@
-function menu() {
+export default function menu() {
 	if (window.innerWidth <= 576) {
 		const menuItem = document.querySelector('.c-mobile-menu__item');
 		const menuParent = document.querySelector('.c-mobile-menu__item-parent');
-		const menuBack = document.querySelector('.js-mobile-menu-back');
+		const menuBackBtn = document.querySelector('.js-mobile-menu-back');
 
 		if (menuParent) {
 			menuParent.addEventListener('click', function(event) {
@@ -10,8 +10,8 @@ function menu() {
 			});
 		}
 		
-		if (menuBack) {
-			menuBack.addEventListener('click', function(event) {
+		if (menuBackBtn) {
+			menuBackBtn.addEventListener('click', function(event) {
 				menuBack(event.currentTarget);
 			});
 		}
@@ -23,7 +23,7 @@ function menu() {
 			submenu.closest('.c-mobile-menu__item').classlist.add('is-show');
 
 			if (submenu) {
-				menuBack.classlist.add('is-active');
+				menuBackBtn.classlist.add('is-active');
 			}
 		}
 
@@ -36,5 +36,3 @@ function menu() {
 		}
 	}
 };
-
-export default menu;

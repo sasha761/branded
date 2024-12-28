@@ -20,7 +20,6 @@ class BrandedSite extends Site {
     parent::__construct();
 
     include( get_template_directory() . '/inc/language.php' );
-    // add_action( 'init', array( $this, 'theme_init' ) );
     add_action( 'after_setup_theme', array( $this, 'theme_supports' ) );
     add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
     add_action( 'widgets_init', array( $this, 'widgets_init' ) );
@@ -56,25 +55,44 @@ class BrandedSite extends Site {
     );
   }
 
-  // public function theme_init() {
-  //   wp_deregister_script('jquery');
-  //   // wp_register_script('jquery', ("https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"), false);
-  //   wp_register_script('jquery', get_template_directory_uri() . '/dist/js/index.js', array(), _S_VERSION, false); 
-  //   wp_enqueue_script('jquery');
-  // }
-
   public function enqueue_scripts() {
     wp_enqueue_style( 'news-style', get_stylesheet_uri(), array(), _S_VERSION );
 
     wp_enqueue_script( 'pure-js', get_template_directory_uri() . '/dist/js/index2.js', array(), _S_VERSION, true );
+    
     wp_localize_script( 'pure-js', 'ajax', array(
+      'wc_ajax_url' => WC_AJAX::get_endpoint( '%%endpoint%%' ),
       'url' => admin_url('admin-ajax.php')
     ));
 
-
-    if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-      wp_enqueue_script( 'comment-reply' );
+    $extra_params_for_rest_uri = apply_filters( 'woo_variation_swatches_rest_add_extra_params', array() );
+    if ( $extra_params_for_rest_uri ) {
+      $extra_params_for_rest_uri = map_deep( $extra_params_for_rest_uri, 'sanitize_text_field' );
+      wp_add_inline_script( 'woo-variation-swatches', sprintf( 'wp.apiFetch.use( window.createMiddlewareForExtraQueryParams(%s) )', wp_json_encode( $extra_params_for_rest_uri ) ) );
     }
+
+    wp_localize_script( 'pure-js', 'woo_variation_swatches_options',  apply_filters( 'woo_variation_swatches_js_options', array(
+      'show_variation_label'      => wc_string_to_bool( woo_variation_swatches()->get_option( 'show_variation_label', 'yes' ) ),
+      'clear_on_reselect'         => wc_string_to_bool( woo_variation_swatches()->get_option( 'clear_on_reselect', 'no' ) ),
+      'variation_label_separator' => sanitize_text_field( woo_variation_swatches()->get_option( 'variation_label_separator', ':' ) ),
+      'is_mobile'                 => wp_is_mobile(),
+      'show_variation_stock'      => woo_variation_swatches()->is_pro() && wc_string_to_bool( woo_variation_swatches()->get_option( 'show_variation_stock_info', 'no' ) ),
+      'stock_label_threshold'     => absint( woo_variation_swatches()->get_option( 'stock_label_display_threshold', '5' ) ),
+      'cart_redirect_after_add'   => get_option( 'woocommerce_cart_redirect_after_add', 'no' ),
+      'enable_ajax_add_to_cart'   => get_option( 'woocommerce_enable_ajax_add_to_cart', 'yes' ),
+      'cart_url'                  => apply_filters( 'woocommerce_add_to_cart_redirect', wc_get_cart_url(), null ),
+      'is_cart'                   => is_cart(),
+    ) ) );
+
+    wp_localize_script( 'pure-js', 'wc_add_to_cart_variation_params', array(
+      'wc_ajax_url'                      => WC_AJAX::get_endpoint( '%%endpoint%%' ),
+      'i18n_no_matching_variations_text' => __( 'Sorry, no products matched your selection...', 'woocommerce' ),
+      'i18n_make_a_selection_text'       => __( 'Please select some product options before adding...', 'woocommerce' ),
+      'i18n_unavailable_text'            => __( 'Sorry, this product is unavailable...', 'woocommerce' ),
+      'i18n_reset_alert_text'            => __( 'Your selection has been reset...', 'woocommerce' ),
+      // ... любые другие поля, которые нужны вашему коду
+    ));
+
   }
 
   public function add_to_context( $context ) {
@@ -107,24 +125,24 @@ class BrandedSite extends Site {
   }
 
   public function widgets_init() {
-    register_sidebar(array(
-      'name'          => esc_html__( 'Sidebar', 'news' ),
-      'id'            => 'sidebar-1',
-      'description'   => esc_html__( 'Add widgets here.', 'news' ),
-      'before_widget' => '<div id="%1$s" class="widget %2$s">',
-      'after_widget'  => '</div>',
-    ));
-    register_sidebar(array(
-      'name'          => esc_html__( 'Recently', 'news' ),
-      'id'            => 'recently',
-      'description'   => esc_html__( 'Add widgets here.', 'news' ),
-      'before_widget' => '<div id="%1$s" class="widget %2$s">',
-      'after_widget'  => '</div>',
-    ));
+    // register_sidebar(array(
+    //   'name'          => esc_html__( 'Sidebar', 'news' ),
+    //   'id'            => 'sidebar-1',
+    //   'description'   => esc_html__( 'Add widgets here.', 'news' ),
+    //   'before_widget' => '<div id="%1$s" class="widget %2$s">',
+    //   'after_widget'  => '</div>',
+    // ));
+    // register_sidebar(array(
+    //   'name'          => esc_html__( 'Recently', 'news' ),
+    //   'id'            => 'recently',
+    //   'description'   => esc_html__( 'Add widgets here.', 'news' ),
+    //   'before_widget' => '<div id="%1$s" class="widget %2$s">',
+    //   'after_widget'  => '</div>',
+    // ));
 
-    require_once get_template_directory() . '/widgets/class-wc-widget-layered-nav.php';
-    unregister_widget( 'WC_Widget_Layered_Nav' );
-    register_widget( 'My_WC_Widget_Layered_Nav' );
+    // require_once get_template_directory() . '/widgets/class-wc-widget-layered-nav.php';
+    // unregister_widget( 'WC_Widget_Layered_Nav' );
+    // register_widget( 'My_WC_Widget_Layered_Nav' );
   }
 
   public function towebphq($src) {

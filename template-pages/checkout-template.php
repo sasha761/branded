@@ -34,7 +34,7 @@ if( is_wc_endpoint_url( 'order-received' ) ) {
 
   // print_r($_product);
 
-	$context['order'] = wc_get_order($order_id);
+	$context['order'] = $order;
 
 	$context['order_data'] = array(
 		'order_items' => $order->get_items(),
@@ -44,9 +44,8 @@ if( is_wc_endpoint_url( 'order-received' ) ) {
 	  'status' => $order->get_status(),
 	  'shipping_total' => $order->get_total_shipping(),
 	  'shipping_tax_total' => wc_format_decimal($order->get_shipping_tax(), 2),
-// unused
-//	  'fee_total' => wc_format_decimal($fee_total, 2),
-//	  'fee_tax_total' => wc_format_decimal($fee_tax_total, 2),
+	  // 'fee_total' => wc_format_decimal($fee_total, 2),
+	  // 'fee_tax_total' => wc_format_decimal($fee_tax_total, 2),
 	  'tax_total' => wc_format_decimal($order->get_total_tax(), 2),
 	  'cart_discount' => (defined('WC_VERSION') && (WC_VERSION >= 2.3)) ? wc_format_decimal($order->get_total_discount(), 2) : wc_format_decimal($order->get_cart_discount(), 2),
 	  'order_discount' => (defined('WC_VERSION') && (WC_VERSION >= 2.3)) ? wc_format_decimal($order->get_total_discount(), 2) : wc_format_decimal($order->get_order_discount(), 2),
@@ -111,7 +110,6 @@ if( is_wc_endpoint_url( 'order-received' ) ) {
  
 
 } else {
-
 	$context['products'] = [];
 
 	$context['checkout_url'] = wc_get_checkout_url();
@@ -127,7 +125,6 @@ if( is_wc_endpoint_url( 'order-received' ) ) {
 		$arr[] = WC()->checkout()->get_value( $key );
 	}
 	$context['checkout_key'] = $arr;
-
 
 
 
@@ -192,9 +189,9 @@ if( is_wc_endpoint_url( 'order-received' ) ) {
 		$arr_cupon[] = $coupon;
 	}
 
-    if (!empty($arr_cupon)) {
-        $context['coupons'] = $arr_cupon;
-    }
+  if (!empty($arr_cupon)) {
+    $context['coupons'] = $arr_cupon;
+  }
 
 	$context['total']    = WC()->cart->get_total();
 	$context['cart_total']    = WC()->cart->get_cart_subtotal();
