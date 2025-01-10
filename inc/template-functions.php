@@ -47,7 +47,10 @@ function custom_dequeue() {
   wp_dequeue_style('wcml-dropdown-0');
   wp_deregister_style('wcml-dropdown-0');
   
-  
+  // wp_dequeue_script( 'wc-layered-nav' );
+  wp_deregister_script( 'wc-layered-nav' );
+  wp_deregister_script( 'selectWoo' );
+  wp_deregister_script( 'select2' );
   wp_deregister_script( 'wc-cart-fragments' );
   wp_deregister_script( 'aws-script' );
   wp_deregister_script( 'comment-reply' );

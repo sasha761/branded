@@ -10,62 +10,60 @@ function get_product_id_by_slug($product_slug) {
 
 add_action( 'rest_api_init', function () {
   register_rest_route('/api/product', '/get_single_product', [
-    'methods' => 'GET',
+    'methods'  => 'GET',
     'callback' => 'get_single_product',
-    'args' => [
+    'args'     => [
       'lang' => [
         'required' => false,
-        'default' => 'ru',
+        'default'  => 'ru',
       ],
-    ]
+      'url' => [
+        'required' => true,
+      ],
+    ],
   ]);
 });
 
 function get_single_product($data) {
-	$page_id = get_product_id_by_slug($data['url']);
-  
-  $id = apply_filters( 'wpml_object_id', $page_id, 'product', true, $data['lang'] );
+  $lang = $data['lang'];
+  $url = $data['url'];
 
+  // Получаем ID продукта на основе переданного URL
+  $page_id = get_product_id_by_slug($url);
+  
+  $id = apply_filters('wpml_object_id', $page_id, 'product', true, $lang);
+  if (!$id) return new WP_Error('not_found', 'Продукт не найден', ['status' => 404]);
+  
 
   $product  = wc_get_product($id);
+  if (!$product) return new WP_Error('not_found', 'Продукт не найден', ['status' => 404]);
+  
+
   $response = get_product_short_info($product, $id);
 
   // все что ниже на отложенный запрос !
-  $sku             = $product->get_sku() || $id; 
-  $brand           = wc_get_product_terms($id, 'pa_brand', array()); 
-  $categories      = get_the_terms( $id, 'product_cat' );
-  $categories_arr  = [];
-  $categories_str  = '';
+  $response['categories_str'] = get_product_categories($id);
+  $brand = get_product_brand($id);
+  $response['product_info'] = $brand ? get_field('product_info', $brand) : null;
 
-  foreach ($categories as $key => $category) {
-    if ($category->parent) {
-      if ($key == 0) $key = $key + 1;
-      $categories_arr[$key] = $category->name;
-    } else {
-      $categories_arr[0] = $category->name;
-    }
-  }
-  ksort($categories_arr);
-
-  $categories_str = implode(", ", $categories_arr);
-  $response['categories_str'] = $categories_str;
-
-  $response['product_info'] = get_field('product_info', $brand[0]);
-
+  $sku = $product->get_sku() ? $product->get_sku() : $id;
   $response['product_info']['specification'] = 
-    "<p><b>Бренд:</b> {$brand[0]->name}</p>
-    <p><b>Категория:</b> {$categories_str}</p>
-    <p><b>Артикул:</b> {$sku}</p>
-    <p><b>Наличие:</b> {$response['stockStatus']}</p>
-    <p><b>Доставка:</b> Отправка завтра</p>";
+      "<p><b>Бренд:</b> " . ($brand ? $brand->name : 'Не указан') . "</p>
+      <p><b>Категория:</b> {$response['categories_str']}</p>
+      <p><b>Артикул:</b> {$sku}</p>
+      <p><b>Наличие:</b> {$response['stockStatus']}</p>
+      <p><b>Доставка:</b> Отправка завтра</p>";
 
-  $response['rating']       = $product->get_average_rating();
-  $response['count']        = $product->get_rating_count();
-  $comments_args            = array('post_id' => $product->get_id(), 'status' => 'approve'); 
-  $response['comments']     = get_comments($comments_args);
+  $response['rating'] = $product->get_average_rating();
+  $response['count'] = $product->get_rating_count();
+  $comments_args = [
+      'post_id' => $product->get_id(),
+      'status' => 'approve',
+  ];
+  $response['comments'] = get_comments($comments_args);
   
 
-  wp_send_json($response);
+  return $response;
 }
 
 add_action( 'rest_api_init', function () {
@@ -76,7 +74,7 @@ add_action( 'rest_api_init', function () {
 });
 
 function get_related_products($data) {
-  do_action('wpml_switch_language', 'uk');
+  // do_action('wpml_switch_language', 'uk');
   $categories       = get_the_terms( $data['id'], 'product_cat' );
   // $response['cats'] = [];
   
@@ -118,5 +116,5 @@ function get_related_products($data) {
     }
   }
   
-  wp_send_json($response);
+  return $response;
 }

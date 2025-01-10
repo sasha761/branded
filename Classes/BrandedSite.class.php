@@ -1,12 +1,10 @@
 <?php
-
 use Timber\ImageHelper;
 use Timber\Menu;
 use Timber\Site;
 use Timber\URLHelper;
 use Twig\Extension\StringLoaderExtension;
 use Twig\TwigFilter;
-
 
 /**
  * Start Timber Support
@@ -82,7 +80,7 @@ class BrandedSite extends Site {
       'enable_ajax_add_to_cart'   => get_option( 'woocommerce_enable_ajax_add_to_cart', 'yes' ),
       'cart_url'                  => apply_filters( 'woocommerce_add_to_cart_redirect', wc_get_cart_url(), null ),
       'is_cart'                   => is_cart(),
-    ) ) );
+    )));
 
     wp_localize_script( 'pure-js', 'wc_add_to_cart_variation_params', array(
       'wc_ajax_url'                      => WC_AJAX::get_endpoint( '%%endpoint%%' ),
@@ -92,7 +90,6 @@ class BrandedSite extends Site {
       'i18n_reset_alert_text'            => __( 'Your selection has been reset...', 'woocommerce' ),
       // ... любые другие поля, которые нужны вашему коду
     ));
-
   }
 
   public function add_to_context( $context ) {
@@ -125,24 +122,24 @@ class BrandedSite extends Site {
   }
 
   public function widgets_init() {
-    // register_sidebar(array(
-    //   'name'          => esc_html__( 'Sidebar', 'news' ),
-    //   'id'            => 'sidebar-1',
-    //   'description'   => esc_html__( 'Add widgets here.', 'news' ),
-    //   'before_widget' => '<div id="%1$s" class="widget %2$s">',
-    //   'after_widget'  => '</div>',
-    // ));
-    // register_sidebar(array(
-    //   'name'          => esc_html__( 'Recently', 'news' ),
-    //   'id'            => 'recently',
-    //   'description'   => esc_html__( 'Add widgets here.', 'news' ),
-    //   'before_widget' => '<div id="%1$s" class="widget %2$s">',
-    //   'after_widget'  => '</div>',
-    // ));
+    register_sidebar(array(
+      'name'          => esc_html__( 'Sidebar', 'news' ),
+      'id'            => 'sidebar-1',
+      'description'   => esc_html__( 'Add widgets here.', 'news' ),
+      'before_widget' => '<div id="%1$s" class="widget %2$s">',
+      'after_widget'  => '</div>',
+    ));
+    register_sidebar(array(
+      'name'          => esc_html__( 'Recently', 'news' ),
+      'id'            => 'recently',
+      'description'   => esc_html__( 'Add widgets here.', 'news' ),
+      'before_widget' => '<div id="%1$s" class="widget %2$s">',
+      'after_widget'  => '</div>',
+    ));
 
-    // require_once get_template_directory() . '/widgets/class-wc-widget-layered-nav.php';
-    // unregister_widget( 'WC_Widget_Layered_Nav' );
-    // register_widget( 'My_WC_Widget_Layered_Nav' );
+    require_once get_template_directory() . '/widgets/class-wc-widget-layered-nav.php';
+    unregister_widget( 'WC_Widget_Layered_Nav' );
+    register_widget( 'My_WC_Widget_Layered_Nav' );
   }
 
   public function towebphq($src) {

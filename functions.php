@@ -21,7 +21,7 @@ if ( ! class_exists( 'Timber' ) ) {
 Timber::$dirname = 'templates';
 
 if ( ! defined( '_S_VERSION' ) ) {
-	define( '_S_VERSION', '2.0.1' );
+	define( '_S_VERSION', '2.1.0' );
 }
 
 require_once get_template_directory() . '/Classes/BrandedSite.class.php';

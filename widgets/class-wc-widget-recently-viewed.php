@@ -116,10 +116,10 @@ class My_WC_Widget_Recently_Viewed extends WC_Widget {
 
 		$content = ob_get_clean();
 
-		echo '<pre>';
+		// echo '<pre>';
 		// echo $content;
-		var_dump($context['viewed']);
-		echo "</pre>"; 
+		// var_dump($context['viewed']);
+		// echo "</pre>"; 
 	}
 }
 

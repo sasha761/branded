@@ -106,6 +106,30 @@ function get_category_details_by_slug( $slug ) {
   );
 }
 
+function get_product_categories($id) {
+  $categories = get_the_terms($id, 'product_cat');
+  $categories_arr = [];
+
+  if ($categories && !is_wp_error($categories)) {
+    foreach ($categories as $key => $category) {
+      if ($category->parent) {
+        if ($key == 0) $key = $key + 1;
+        $categories_arr[$key] = $category->name;
+      } else {
+        $categories_arr[0] = $category->name;
+      }
+    }
+    ksort($categories_arr);
+  }
+
+  return implode(", ", $categories_arr);
+}
+
+function get_product_brand($id) {
+  $brand = wc_get_product_terms($id, 'pa_brand', array());
+  return $brand && !is_wp_error($brand) ? $brand[0] : null;
+}
+
 
 function resize_and_convert_to_webp($path, $width, $height) {
   $manager = new ImageManager(new Driver());

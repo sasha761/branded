@@ -86,28 +86,34 @@ export default class select {
 
 	submit() {
 		this.niceSelectHTML.forEach((item, index) => {
-
+	
 			item.addEventListener('click', (event) => {
 				if (event.target.classList.contains('option')) {
-			 		let optionVal = event.target.getAttribute("data-value");
-			 		// let thisSelect = this.select[index];
-			 		let thisSelect = event.currentTarget.closest('form').querySelector('select');
-					
-			 		thisSelect.value = optionVal;
+					let optionVal = event.target.getAttribute("data-value");
+					let thisSelect = event.currentTarget.closest('form').querySelector('select');
 
-
-			 		this.triggerChange(thisSelect);
-		
-			 		thisSelect.querySelector('option:checked').removeAttribute("selected");
-			 		thisSelect.querySelector('option[value="' + optionVal + '"]').setAttribute("selected", "selected");
-
-				 	item.querySelector('.selected').classList.remove('selected');
-				 	item.querySelector('.option[data-value="' + optionVal + '"]').classList.add('selected');
-    			let text = thisSelect.querySelector('option[value="' + optionVal + '"]').innerText;
-
-		      item.querySelector('.current').innerText = text;
-
-		      thisSelect.closest('form').submit();
+					let hiddenInput = event.currentTarget.closest('form').querySelector('input[name^="filter_"]');
+        
+					// Устанавливаем значение
+					thisSelect.value = optionVal;
+					if (hiddenInput) {
+						hiddenInput.value = optionVal;
+					}
+	
+					this.triggerChange(thisSelect);
+	
+					thisSelect.querySelector('option:checked')?.removeAttribute("selected");
+					thisSelect.querySelector('option[value="' + optionVal + '"]')?.setAttribute("selected", "selected");
+	
+					item.querySelector('.selected')?.classList.remove('selected');
+					event.target.classList.add('selected');
+	
+					let text = thisSelect.querySelector('option[value="' + optionVal + '"]')?.innerText;
+					item.querySelector('.current').innerText = text;
+	
+					// if (!thisSelect.hasAttribute('multiple')) {
+						thisSelect.closest('form').submit();
+					// }
 				}
 			});
 		});
