@@ -11,10 +11,11 @@ class ThemeImageSizes
    public array $default_thumbnails = [
             'medium',
             'medium_large',
-            'thumbnail',
             'large',
             '1536x1536',
             '2048x2048',
+            'variation_swatches_image_size',
+            'variation_swatches_tooltip_size',
             'woocommerce_thumbnail',
             'woocommerce_single',
             'woocommerce_gallery_thumbnail',

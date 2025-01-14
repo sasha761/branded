@@ -138,7 +138,7 @@ function get_products($data) {
     // Получаем категорию по slug
     $category = get_term_by('slug', $slug, 'product_cat');
 
-    ;
+    
     if ($category) {
         // Применяем WPML фильтр к ID категории
         $category_id = apply_filters('wpml_object_id', $category->term_id, 'product_cat', true, $lang);
@@ -147,6 +147,8 @@ function get_products($data) {
             // Получаем slug категории на нужном языке
             $translated_category = get_term($category_id, 'product_cat');
             $slug = $translated_category ? $translated_category->slug : $slug;
+
+            // var_dump($slug);
         }
     }
   }
@@ -179,6 +181,7 @@ function get_products($data) {
 
   if (function_exists('icl_object_id')) {
     $args['lang'] = $lang;
+
   }
   
   $query = new WP_Query($args);
@@ -187,6 +190,9 @@ function get_products($data) {
   $response = [];
   
   $response['product_cat'] = $slug ? get_category_details_by_slug($slug) : null;
+  // $response['link'] = apply_filters('wpml_permalink', home_url("/product/{$product_slug}"), $lang);
+  // $response['link'] = get_permalink();
+
   if(!empty($posts)) {
     $response['status'] = 'ok';
     $response['products_count'] = $query->found_posts;

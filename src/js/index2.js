@@ -46,7 +46,8 @@ async function productPageFunctions() {
     validationModule,
     swiperModule,
     wcVarModule,
-    swatchesModule
+    swatchesModule,
+    ratingModule
   ] = await Promise.all([
     import('./modules/lightbox.js'),
     import('./modules/quick-buy.js'),
@@ -54,6 +55,7 @@ async function productPageFunctions() {
     import('./modules/swiper.js'),
     import('./modules/wc-add-to-cart-variation.js'),
     import('./modules/VariationSwatches.js'),
+    import('./modules/rating-stars.js')
   ]);
 
   if (typeof window.wc_add_to_cart_variation_params !== 'undefined' && document.querySelector('.variations_form')) {
@@ -67,6 +69,11 @@ async function productPageFunctions() {
 
   // Лайтбокс
   new lightboxModule.default('.js-lightbox', '.js-lightbox-modal');
+
+  ratingModule.initRatingModule({
+    reviewRatingRequired: true,
+    requiredRatingText: 'Не забудьте выбрать оценку!',
+  });
 
   // Валидация
   const formValidator = new validationModule.default();

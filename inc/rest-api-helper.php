@@ -87,6 +87,8 @@ function get_category_details_by_slug( $slug ) {
 
   $acf_title = get_field('title', 'product_cat_' . $category_id);
 
+  $category_url = get_term_link( $term, 'product_cat' ); // Получаем URL категории
+
 
   // Ищем родительскую категорию, если есть
   $parent_category = null;
@@ -100,9 +102,9 @@ function get_category_details_by_slug( $slug ) {
   // Возвращаем массив с данными о категории
   return array(
     'id' => $category_id,
-    'name' => $category_name,
+    'name' => $acf_title ? $acf_title : $category_name,
     'parent' => $parent_category,
-    'acf_title' => $acf_title,
+    'url' => $category_url
   );
 }
 
