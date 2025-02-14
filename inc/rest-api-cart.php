@@ -7,7 +7,13 @@ add_action( 'rest_api_init', function () {
 
   register_rest_route($namespace, '/get_cart_url', [
     'methods' => 'GET',
-    'callback' => 'get_cart_url'
+    'callback' => 'get_cart_url',
+    'args' => [
+      'lang' => [
+        'required' => false,
+        'default'  => 'ru',
+      ],
+    ]
   ]);
 
   register_rest_route($namespace, '/create_order', [
@@ -26,10 +32,18 @@ add_action( 'rest_api_init', function () {
   ]);
 });
 
-function get_cart_url() {
-	$response['cart'] = wc_get_cart_url();
-	$response['checkout'] = wc_get_checkout_url();
-  wp_send_json($response);
+function get_cart_url(WP_REST_Request $request) {
+  $lang = $request->get_param('lang');
+
+  $cart_url = apply_filters( 'wpml_permalink', wc_get_cart_url(), $lang );
+  $checkout_url = apply_filters( 'wpml_permalink', wc_get_checkout_url(), $lang );
+
+  $context = [
+    'cart' => $cart_url,
+    'checkout' => $checkout_url,
+  ];
+
+  return $context;
 }
 
 function get_order_info($request) {
@@ -111,15 +125,15 @@ function get_order_info($request) {
   wp_send_json($data);
 }
 
-function create_order($request) {
-  $email      = $request['email'];
-  $name       = $request['firstName'];
-  $surname    = $request['lastName'];
-  $phone      = $request['phone'];
-  $city       = $request['city'];
-  $address    = $request['address'];
-  $products   = $request['products'];
-  $comments   = $request['comments'] ? $request['comments'] : null;
+function create_order(WP_REST_Request $request) {
+  $email      = $request->get_param('email');
+  $name       = $request->get_param('firstName');
+  $surname    = $request->get_param('lastName');
+  $phone      = $request->get_param('phone');
+  $city       = $request->get_param('city');
+  $address    = $request->get_param('address');
+  $products   = $request->get_param('products');
+  $comments   = $request->get_param('comments') ?? null;
 
   $args = array(
     'status'        => 'on-hold',
@@ -165,16 +179,15 @@ function create_order($request) {
   $order->save();
 
   $order_id = $order->get_id();
-  $thank_you_url = $order->get_checkout_order_received_url();
 
   if (!empty($order_id)) {
-    $response = $thank_you_url;
+    $response = $order->get_checkout_order_received_url();
   } else {
     $response = false;
   }
   
   telegram_notification($order_id);
-  wp_send_json($response); 
+  return $response; 
 }
 
 

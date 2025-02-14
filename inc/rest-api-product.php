@@ -69,43 +69,65 @@ function get_single_product($data) {
 add_action( 'rest_api_init', function () {
   register_rest_route('/api/product', '/get_related_products', [
     'methods' => 'GET',
-    'callback' => 'get_related_products'
+    'callback' => 'get_related_products',
+    'args'     => [
+      'lang' => [
+        'required' => false,
+        'default'  => 'ru',
+      ],
+      'id' => [
+        'required' => true,
+      ],
+    ],
   ]);
 });
 
 function get_related_products($data) {
-  // do_action('wpml_switch_language', 'uk');
-  $categories       = get_the_terms( $data['id'], 'product_cat' );
-  // $response['cats'] = [];
+  $lang = $data['lang'];
+  $id = $data['id'];
+
+  $product_id = apply_filters('wpml_object_id', $id, 'product', true, $lang);
+  if (!$product_id) return; 
+
+  $categories = get_the_terms($product_id, 'product_cat');
+  if (empty($categories) || is_wp_error($categories)) return;
   
-  $cat_ids = '';
-  foreach ($categories as $key => $category) {
+
+  $selected_category_id = null;
+
+  foreach ($categories as $category) {
+    $translated_category_id = apply_filters('wpml_object_id', $category->term_id, 'product_cat', true, $lang);
+
     if ($category->parent) {
-      if ($key == 0) $key = $key + 1;
-      $cat_ids = $category->term_id;
-      // $response['cats'][$key] = $category->name;
-    } else {
-      // $response['cats'][0] = $category->name;
+      // Приоритет — дочерняя категория
+      $selected_category_id = $translated_category_id ?: $category->term_id;
+      break; // Как только найдена дочерняя категория, выходим из цикла
+    } elseif (!$selected_category_id) {
+      // Запоминаем родительскую, если дочерняя ещё не найдена
+      $selected_category_id = $translated_category_id ?: $category->term_id;
     }
   }
-  // ksort($response['cats']);
 
-  $posts = get_posts([
+  $args = [
     'post_type'   => 'product',
     'posts_per_page' => 10,
     'orderby' => 'date',
     'order' => 'DESC',
-    'tax_query' => [
-      'relation'=>'AND',
-      [
-        'taxonomy'        => 'product_cat',
-        'field'           => 'term_id',
-        'terms'           => array($cat_ids),
-        'operator'        => 'IN',
-      ] 
-    ],
-    'suppress_filters' => false,
-  ]);
+    'suppress_filters' => true,
+  ];
+
+  
+  if (!empty($selected_category_id)) {
+    $tax_query = [
+      'taxonomy'        => 'product_cat',
+      'field'           => 'term_id',
+      'terms'           => [$selected_category_id],
+      'operator'        => 'IN',
+    ];
+    $args['tax_query'] = array('relation' => 'AND', $tax_query);
+  }
+
+  $posts = get_posts($args);
 
   $response = [];
 

@@ -1,7 +1,7 @@
 {% extends 'templates/base.twig' %}
 {% block content %}
 	<main class="p-main">
-
+	
 	 	{% include 'templates/partial/hero-home.twig' with {'data': banners_group} %}
 
 		{% include 'templates/partial/accessory.twig' with {'data': accesories} %}
@@ -10,7 +10,7 @@
 
 		{% include 'templates/partial/brand.twig' with {'data': product_brand} %}
 
-	  {% include 'templates/partial/outlet.twig' with{'data': sale_products} %}
+	  {% include 'templates/partial/outlet.twig' with {'data': sale_products} %}
 
 	  {% include 'templates/partial/branded.twig' %}
 
