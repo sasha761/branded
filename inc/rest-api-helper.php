@@ -1,6 +1,6 @@
 <?php
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
+// use Intervention\Image\ImageManager;
+// use Intervention\Image\Drivers\Gd\Driver;
 // use Intervention\Image\Encoders\WebpEncoder;
 // use Intervention\Image\Encoders\AutoEncoder;
 
@@ -146,41 +146,45 @@ function get_product_brand($id)
 }
 
 
-function resize_and_convert_to_webp($path, $width, $height)
-{
-  $manager = new ImageManager(new Driver());
+function get_resized_image_url($image_url, $width = null, $height = null, $position = null, $fallback_size = 'thumbnail') {
+  if (!$image_url) {
+    return null;
+  }
 
-  $image = $manager->read('wp-content/themes/news/src/img/16581.png'); // open an image file
-  $image->resize($width, $height);
+  // Преобразуем URL в локальный путь
+  $image_path = str_replace(home_url(), ABSPATH, $image_url);
 
-  $encoded = $image->toJpg();
+  // Получаем расширение файла (jpg, png, webp)
+  $extension = pathinfo($image_path, PATHINFO_EXTENSION);
 
-  $encoded->save('wp-content/themes/news/src/img/resized_image.jpg');
+  // Определяем позиционирование кадрирования (если передано)
+  $crop_suffix = $position ? "-c-$position" : '';
 
-  $encoded = $image->toWebp();
+  // Формируем пути к уменьшенным изображениям Timber (с разными расширениями)
+  $resized_jpg = preg_replace('/\.' . $extension . '$/', "-{$width}x{$height}{$crop_suffix}.jpg", $image_path);
+  $resized_webp = preg_replace('/\.' . $extension . '$/', "-{$width}x{$height}{$crop_suffix}.webp", $image_path);
 
-  $encoded->save('wp-content/themes/news/src/img/resized_image.webp');
+  // Проверяем, существует ли уменьшенная версия
+  if (file_exists($resized_jpg)) {
+    return str_replace(ABSPATH, home_url(), $resized_jpg);
+  } elseif (file_exists($resized_webp)) {
+    return str_replace(ABSPATH, home_url(), $resized_webp);
+  } 
 
-  // $image = Image::make($image_url);
+  // Если указан предустановленный размер (например, single_xl, archive_xl)
+  if (in_array($fallback_size, ['single_xl', 'archive_md', 'archive_xl', 'full', 'thumbnail'])) {
+    $attachment_id = attachment_url_to_postid($image_url);
+    if ($attachment_id) {
+      $image_src = wp_get_attachment_image_src($attachment_id, $fallback_size);
+      if ($image_src) {
+        return $image_src[0]; // URL fallback-изображения
+      }
+    }
+  }
 
-  // // Ресайз изображения
-  // $resized_image = $image->fit(180, 180);
-
-  // // Сохранение в формате JPG
-  // $jpg_path = 'path/to/resized_images/' . uniqid() . '.jpg';
-  // $resized_image->save($jpg_path, 80);  // Качество сохранения: 80
-
-  // // Сохранение в формате WebP
-  // $webp_path = 'path/to/resized_images/' . uniqid() . '.webp';
-  // $resized_image->save($webp_path, 80, 'webp');  // Качество сохранения: 80
-
-  return [
-    'jpg' => $jpg_path,
-    'webp' => $webp_path,
-  ];
+  return $image_url; // Если ничего не найдено, возвращаем оригинальное изображение
 }
 
-// resize_and_convert_to_webp();
 
 
 function set_seo_identifiers(WP_REST_Request $request)
