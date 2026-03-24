@@ -9,6 +9,9 @@ add_action('rest_api_init', function () {
   register_rest_route($namespace, '/set_seo_identifiers/', [
     'methods' => 'POST',
     'callback' => 'set_seo_identifiers',
+    'permission_callback' => function() {
+      return current_user_can('manage_options');
+    },
   ]);
 });
 
@@ -20,7 +23,7 @@ function get_product_short_info($product, $id)
   // Добавляем проверку на существование бренда
   $brand_name = !empty($brand[0]) ? $brand[0]->name : '';
   $brand_slug = !empty($brand[0]) ? $brand[0]->slug : '';
-  $brand_url = !empty($brand[0]) ? get_term_link($brand[0]->term_id, 'pa_brand') : '123';
+  $brand_url = !empty($brand[0]) ? get_term_link($brand[0]->term_id, 'pa_brand') : '';
 
   $attachment_ids = $product->get_gallery_image_ids($id);
   $post['brand'] = $brand;
@@ -43,7 +46,8 @@ function get_product_short_info($product, $id)
   $post['permalink'] = get_permalink($id);
   $post['other_colors'] = get_field('other_colors', $id);
   $post['is_sale'] = false;
-  $post['stockStatus'] = $post['is_stock'] == 'outofstock' ? __('Out of stock', 'branded') : __('In stock', 'branded');
+  // $post['stockStatus'] = $post['is_stock'] == 'outofstock' ? __('Out of stock', 'branded') : __('In stock', 'branded');
+  $post['stockStatus'] = $post['is_stock'];
   $post['percent'] = false;
   $post['is_sale'] = false;
 
@@ -76,6 +80,14 @@ function get_product_short_info($product, $id)
     }
 
     $post['size_attribute'] = $result;
+  } else {
+    $post['size_attribute'] = [
+      (object)[
+        'availability' => true,
+        'id' => $id,
+        'name' => 'one size',
+      ]
+    ];
   }
 
   return $post;
@@ -109,12 +121,15 @@ function get_category_details_by_slug($slug)
     }
   }
 
+  $description = term_description($category_id, 'product_cat');
+
   // Возвращаем массив с данными о категории
   return array(
     'id' => $category_id,
     'name' => $acf_title ? $acf_title : $category_name,
     'parent' => $parent_category,
-    'url' => $category_url
+    'url' => $category_url,
+    'description' => $description ?: '',
   );
 }
 
@@ -256,96 +271,307 @@ function set_seo_identifiers(WP_REST_Request $request)
 }
 
 
-add_action('rest_api_init', function () {
-  register_rest_route('custom/v1', '/products-by-brands', [
-    'methods' => 'GET',
-    'callback' => 'get_products_by_brands',
-    'permission_callback' => '__return_true',
-  ]);
-});
+// add_action('rest_api_init', function () {
+//   register_rest_route('custom/v1', '/products-by-brands', [
+//     'methods' => 'GET',
+//     'callback' => 'get_products_by_brands',
+//     'permission_callback' => '__return_true',
+//   ]);
+// });
 
-function get_products_by_brands()
-{
-  $brands = [
-    // 'monoshop-uk',
-    // 'monoshop',
-    // 'merezhyvo-uk',
-    // 'merezhyvo',
-    // 'luxemon-uk',
-    // 'luxemon',
-    // 'one-face-uk',
-    // 'one-face',
-    // 'lexie-uk',
-    // 'lexie',
-    // 'german-kids-uk',
-    // 'german-kids',
-    // 'fason-uk',
-    // 'fason',
-    // 'dobro-brand-uk',
-    // 'dobro-brand',
-    // 'elison-kids-uk',
-    // 'elison-kids',
-    // 'zlata-pivtorak-uk',
-    // 'zlata-pivtorak',
-    // 'kasandra-uk',
-    // 'kasandra'
-    // 'be-om', 
-    // 'be-om-uk'
-  ];
+// function get_products_by_brands()
+// {
+//   $brands = [
+//     // 'monoshop-uk',
+//     // 'monoshop',
+//     // 'merezhyvo-uk',
+//     // 'merezhyvo',
+//     // 'luxemon-uk',
+//     // 'luxemon',
+//     // 'one-face-uk',
+//     // 'one-face',
+//     // 'lexie-uk',
+//     // 'lexie',
+//     // 'german-kids-uk',
+//     // 'german-kids',
+//     // 'fason-uk',
+//     // 'fason',
+//     // 'dobro-brand-uk',
+//     // 'dobro-brand',
+//     // 'elison-kids-uk',
+//     // 'elison-kids',
+//     // 'zlata-pivtorak-uk',
+//     // 'zlata-pivtorak',
+//     // 'kasandra-uk',
+//     // 'kasandra'
+//     // 'be-om', 
+//     // 'be-om-uk'
+//   ];
 
-  $args = [
-    'post_type' => 'product',
-    'post_status' => 'publish',
-    'posts_per_page' => -1,
-    'tax_query' => [
-        [
-          'taxonomy' => 'pa_brand', // Убедитесь, что slug атрибута верный
-          'field' => 'slug',
-          'terms' => $brands,
-        ],
-    ],
-    'suppress_filters' => false, // Включаем WPML фильтрацию
-  ];
+//   $args = [
+//     'post_type' => 'product',
+//     'post_status' => 'publish',
+//     'posts_per_page' => -1,
+//     'tax_query' => [
+//         [
+//           'taxonomy' => 'pa_brand', // Убедитесь, что slug атрибута верный
+//           'field' => 'slug',
+//           'terms' => $brands,
+//         ],
+//     ],
+//     'suppress_filters' => false, // Включаем WPML фильтрацию
+//   ];
 
-  $query = new WP_Query($args);
-  $products = [];
+//   $query = new WP_Query($args);
+//   $products = [];
 
-  if ($query->have_posts()) {
-    while ($query->have_posts()) {
-      $query->the_post();
+//   if ($query->have_posts()) {
+//     while ($query->have_posts()) {
+//       $query->the_post();
 
-      $product_id = apply_filters('wpml_object_id', get_the_ID(), 'product', true, 'uk');
+//       $product_id = apply_filters('wpml_object_id', get_the_ID(), 'product', true, 'uk');
 
-      if ($product_id) {
-        // Устанавливаем статус "нет в наличии" для основного товара
-        update_post_meta($product_id, '_stock_status', 'outofstock');
+//       if ($product_id) {
+//         // Устанавливаем статус "нет в наличии" для основного товара
+//         update_post_meta($product_id, '_stock_status', 'outofstock');
 
-        // Если товар вариативный, обновляем статус для всех его вариаций
-        if (get_post_type($product_id) === 'product') {
-          $children = get_children([
-            'post_parent' => $product_id,
-            'post_type' => 'product_variation',
-            'post_status' => 'publish',
-          ]);
+//         // Если товар вариативный, обновляем статус для всех его вариаций
+//         if (get_post_type($product_id) === 'product') {
+//           $children = get_children([
+//             'post_parent' => $product_id,
+//             'post_type' => 'product_variation',
+//             'post_status' => 'publish',
+//           ]);
 
-          if (!empty($children)) {
-            foreach ($children as $child) {
-              update_post_meta($child->ID, '_stock_status', 'outofstock');
-            }
-          }
-        }
-      }
+//           if (!empty($children)) {
+//             foreach ($children as $child) {
+//               update_post_meta($child->ID, '_stock_status', 'outofstock');
+//             }
+//           }
+//         }
+//       }
 
-      $products[] = get_permalink($product_id);
-    }
-  }
+//       $products[] = get_permalink($product_id);
+//     }
+//   }
 
-  wp_reset_postdata();
+//   wp_reset_postdata();
 
-  $product_count = count($products);
+//   $product_count = count($products);
 
-  return [
-      'count' => $product_count,
-      'products' => $products,
-  ];
-}
+//   return [
+//       'count' => $product_count,
+//       'products' => $products,
+//   ];
+// }
+
+
+// add_action('rest_api_init', function () {
+//     register_rest_route('custom/v1', '/delete-products-by-brands', [
+//         'methods' => 'GET',
+//         'callback' => 'delete_products_by_brands',
+//         'permission_callback' => '__return_true',
+//     ]);
+// });
+
+// function delete_products_by_brands() {
+//     // Бренды, товары которых нужно удалить
+//     $brands = [
+//         'Kasandra', 'Fason', 'sammy-icon', 'zlata-pivtorak', 'dobro-brand'
+//     ];
+
+//     $args = [
+//         'post_type' => 'product',
+//         'post_status' => 'publish',
+//         'posts_per_page' => -1,
+//         'tax_query' => [
+//             [
+//                 'taxonomy' => 'pa_brand',
+//                 'field' => 'slug',
+//                 'terms' => $brands,
+//             ],
+//         ],
+//         'suppress_filters' => false, // Включаем WPML фильтрацию
+//     ];
+
+//     $query = new WP_Query($args);
+//     $deleted_products = [];
+//     $deleted_images = 0;
+//     $redirects_set = 0;
+
+//     if ($query->have_posts()) {
+//         global $sitepress;
+        
+//         while ($query->have_posts()) {
+//             $query->the_post();
+//             $product_id = get_the_ID();
+//             $product = wc_get_product($product_id);
+            
+//             if (!$product) {
+//                 continue;
+//             }
+            
+//             // Получаем URL товара для создания редиректа
+//             $product_url = get_permalink($product_id);
+            
+//             // Получаем ID родительской категории
+//             $category_ids = $product->get_category_ids();
+//             $redirect_url = home_url(); // По умолчанию на главную
+            
+//             if (!empty($category_ids)) {
+//                 $parent_category_id = $category_ids[0]; // Берем первую категорию
+//                 $redirect_url = get_term_link($parent_category_id, 'product_cat');
+                
+//                 if (is_wp_error($redirect_url)) {
+//                     $redirect_url = home_url(); // Если ошибка, редирект на главную
+//                 }
+//             }
+            
+//             // Получаем все языковые версии товара
+//             $trid = $sitepress->get_element_trid($product_id, 'post_product');
+//             $translations = $sitepress->get_element_translations($trid, 'post_product');
+            
+//             foreach ($translations as $lang => $translation) {
+//                 if (empty($translation->element_id)) {
+//                     continue;
+//                 }
+                
+//                 $translation_id = $translation->element_id;
+//                 $translation_product = wc_get_product($translation_id);
+                
+//                 if (!$translation_product) {
+//                     continue;
+//                 }
+                
+//                 // Получаем URL переведенного товара для редиректа
+//                 $translation_url = get_permalink($translation_id);
+                
+//                 // Удаляем изображения товара
+//                 $image_ids = [];
+                
+//                 // Основное изображение
+//                 $main_image_id = $translation_product->get_image_id();
+//                 if ($main_image_id) {
+//                     $image_ids[] = $main_image_id;
+//                 }
+                
+//                 // Галерея изображений
+//                 $gallery_image_ids = $translation_product->get_gallery_image_ids();
+//                 if (!empty($gallery_image_ids)) {
+//                     $image_ids = array_merge($image_ids, $gallery_image_ids);
+//                 }
+                
+//                 // Если товар вариативный, получаем изображения вариаций
+//                 if ($translation_product->is_type('variable')) {
+//                     $variations = $translation_product->get_children();
+//                     if (!empty($variations)) {
+//                         foreach ($variations as $variation_id) {
+//                             $variation = wc_get_product($variation_id);
+//                             if ($variation) {
+//                                 $variation_image_id = $variation->get_image_id();
+//                                 if ($variation_image_id) {
+//                                     $image_ids[] = $variation_image_id;
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+                
+//                 // Удаляем все найденные изображения
+//                 foreach ($image_ids as $image_id) {
+//                     // Это удалит оригинал и все размеры миниатюр
+//                     wp_delete_attachment($image_id, true);
+//                     $deleted_images++;
+//                 }
+                
+//                 // Добавляем редирект
+//                 add_redirect_rule($translation_url, $redirect_url);
+//                 $redirects_set++;
+                
+//                 // Удаляем товар
+//                 wp_delete_post($translation_id, true);
+//                 $deleted_products[] = $translation_url;
+//             }
+//         }
+//     }
+    
+//     wp_reset_postdata();
+    
+//     return [
+//         'deleted_products_count' => count($deleted_products),
+//         'deleted_products' => $deleted_products,
+//         'deleted_images_count' => $deleted_images,
+//         'redirects_set' => $redirects_set
+//     ];
+// }
+
+
+// function add_redirect_rule($source_url, $target_url) {
+//     // Проверяем наличие плагина Redirection
+//     if (class_exists('Red_Item')) {
+//         // Получаем пути URL без домена
+//         $source = wp_parse_url($source_url, PHP_URL_PATH);
+//         $target = wp_parse_url($target_url, PHP_URL_PATH);
+        
+//         // Проверяем на пустые значения
+//         if (empty($source)) $source = '/';
+//         if (empty($target)) $target = '/';
+        
+//         // Создаем редирект через API плагина Redirection
+//         // Группа с ID 1 - это обычно группа "Redirection" по умолчанию
+//         $details = [
+//             'url'         => $source,
+//             'action_data' => ['url' => $target],
+//             'action_type' => 'url',
+//             'match_type'  => 'url',
+//             'regex'       => false,
+//             'group_id'    => 1,
+//             'status'      => 'enabled',
+//             'position'    => 0,
+//             'action_code' => 301
+//         ];
+        
+//         // Используем правильный метод создания редиректа
+//         if (method_exists('Red_Item', 'create')) {
+//             $result = Red_Item::create($details);
+//             return !is_wp_error($result);
+//         } else {
+//             // Альтернативный способ, если метод create недоступен
+//             global $wpdb;
+//             $table_name = $wpdb->prefix . 'redirection_items';
+            
+//             // Проверяем существование таблицы
+//             if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+//                 $data = [
+//                     'url'         => $source,
+//                     'match_url'   => $source,
+//                     'action_type' => 'url',
+//                     'action_data' => serialize(['url' => $target]),
+//                     'regex'       => 0,
+//                     'group_id'    => 1,
+//                     'status'      => 'enabled',
+//                     'position'    => 0,
+//                     'last_count'  => 0,
+//                     'action_code' => 301,
+//                     'match_type'  => 'url',
+//                 ];
+                
+//                 $wpdb->insert($table_name, $data);
+//                 return $wpdb->insert_id > 0;
+//             }
+//         }
+//     }
+    
+//     // Если Redirection не работает, используем стандартный WordPress редирект
+//     // $redirects = get_option('custom_product_redirects', []);
+//     // $source_path = wp_parse_url($source_url, PHP_URL_PATH);
+//     // $redirects[$source_path] = $target_url;
+//     // update_option('custom_product_redirects', $redirects);
+    
+//     // // Проверяем, добавлен ли уже обработчик редиректов
+//     // if (!has_action('template_redirect', 'handle_custom_redirects')) {
+//     //     add_action('template_redirect', 'handle_custom_redirects');
+//     // }
+    
+//     // return true;
+// }

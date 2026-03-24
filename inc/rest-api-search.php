@@ -44,13 +44,13 @@ function custom_search_endpoint(WP_REST_Request $request) {
       return ['post_title'];
   });
 
-  $query = new WP_Query($args);
-  $posts = $query->posts;
+  $search_query = new WP_Query($args);
+  $posts = $search_query->posts;
 
   $response = [];
 
   if (!empty($posts)) {
-    $response['products_count'] = $query->found_posts;
+    $response['products_count'] = $search_query->found_posts;
 
     foreach ($posts as $key => $post) {
       $post_id = function_exists('icl_object_id') ? apply_filters('wpml_object_id', $post->ID, 'product', true, $lang) : $post->ID;

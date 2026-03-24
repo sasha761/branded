@@ -6,12 +6,13 @@
   <meta name="facebook-domain-verification" content="bcood6oyplq0u82b04m3vmmcoc552c" />
 
   <link rel="preload" href="{{ site.theme.link }}/src/fonts/Gilroy/Gilroy-ExtraBold.woff2" as="font" type="font/woff" crossorigin="anonymous"/>
-  <link rel="preload" href="{{ site.theme.link }}/src/fonts/Montserrat/Montserrat-Medium.woff2" as="font" type="font/woff" crossorigin="anonymous"/>
-  <link rel="preload" href="{{ site.theme.link }}/src/fonts/Montserrat/Montserrat-Light.woff2" as="font" type="font/woff" crossorigin="anonymous"/>
-  <link rel="preload" href="{{ site.theme.link }}/src/fonts/Montserrat/Montserrat-Regular.woff2" as="font" type="font/woff" crossorigin="anonymous"/>
-  <link rel="preload" href="{{ site.theme.link }}/src/fonts/Montserrat/Montserrat-Bold.woff2" as="font" type="font/woff" crossorigin="anonymous"/>
+  {# <link rel="preload" href="{{ site.theme.link }}/src/fonts/Montserrat/Montserrat-Medium.woff2" as="font" type="font/woff" crossorigin="anonymous"/> #}
+  {# <link rel="preload" href="{{ site.theme.link }}/src/fonts/Montserrat/Montserrat-Light.woff2" as="font" type="font/woff" crossorigin="anonymous"/> #}
+  {# <link rel="preload" href="{{ site.theme.link }}/src/fonts/Montserrat/Montserrat-Regular.woff2" as="font" type="font/woff" crossorigin="anonymous"/> #}
+  {# <link rel="preload" href="{{ site.theme.link }}/src/fonts/Montserrat/Montserrat-Bold.woff2" as="font" type="font/woff" crossorigin="anonymous"/> #}
+  <link rel="preload" href="{{ site.theme.link }}/src/fonts/Montserrat/Montserrat-VF.woff2" as="font" type="font/woff" crossorigin="anonymous"/> 
 
-  {# {% if fn('is_product') %} #}
+  {% if fn('is_product') %}
     <link rel="preload" href="{{ site.theme.link }}/src/fonts/star/star.woff2" as="font" type="font/woff" crossorigin="anonymous"/>
 
     <style>
@@ -23,7 +24,7 @@
         font-style: normal;
       }
     </style>
-  {# {% endif %} #}
+  {% endif %}
 
   <link rel="stylesheet preload" as="style" href="{{ site.theme.link }}/dist/css/main.css" type="text/css" crossorigin="anonymous" />
 
@@ -38,31 +39,38 @@
     @font-face {
       font-family: 'Montserrat';
       font-display: swap;
+      src: url('{{theme.link}}/src/fonts/Montserrat/Montserrat-VF.woff2') format('woff2');
+      font-weight: 300 400 500 800;
+      font-style: normal;
+    }
+    /* @font-face {
+      font-family: 'Montserrat';
+      font-display: swap;
       src: url('{{theme.link}}/src/fonts/Montserrat/Montserrat-Medium.woff2') format('woff2');
       font-weight: 500;
       font-style: normal;
-    }
-    @font-face {
+    } */
+    /* @font-face {
       font-family: 'Montserrat';
       font-display: swap;
       src: url('{{theme.link}}/src/fonts/Montserrat/Montserrat-Light.woff2') format('woff2');
       font-weight: 300;
       font-style: normal;
-    }
-    @font-face {
+    } */
+    /* @font-face {
       font-family: 'Montserrat';
       font-display: swap;
       src: url('{{theme.link}}/src/fonts/Montserrat/Montserrat-Regular.woff2') format('woff2');
       font-weight: normal;
       font-style: normal;
-    }
-    @font-face {
+    } */
+    /* @font-face {
       font-family: 'Montserrat';
       font-display: swap;
       src: url('{{theme.link}}/src/fonts/Montserrat/Montserrat-Bold.woff2') format('woff2');
       font-weight: bold;
       font-style: normal;
-    }
+    } */
   </style>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">

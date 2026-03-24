@@ -1,0 +1,123 @@
+{
+  "enabled": true,
+  "initialLoads": [
+    {
+      "id": "load-e79d5ad8-7cdb-4b5b-98fd-7515b01f5d80",
+      "path": "/?perf=1",
+      "startedAt": "2026-03-21T22:04:56.003Z",
+      "navigationType": "reload",
+      "ttfbMs": 2544.6,
+      "domInteractiveMs": 2957.2,
+      "dclMs": 3082.1,
+      "loadMs": 3700.9,
+      "fcpMs": 2964,
+      "lcpMs": 3200
+    },
+    {
+      "id": "load-09c852a9-51c0-4223-a7ff-431ca5b99df4",
+      "path": "/?perf=1",
+      "startedAt": "2026-03-21T22:03:26.225Z",
+      "navigationType": "reload",
+      "ttfbMs": 2395.8,
+      "domInteractiveMs": 2603.6,
+      "dclMs": 2686.7,
+      "loadMs": 3472.6,
+      "fcpMs": 2612,
+      "lcpMs": 2864
+    },
+    {
+      "id": "load-def659b1-dd85-406e-9f78-46f2711c1ef1",
+      "path": "/?perf=1",
+      "startedAt": "2026-03-21T22:03:08.311Z",
+      "navigationType": "navigate",
+      "ttfbMs": 2898.1,
+      "domInteractiveMs": 3309.2,
+      "dclMs": 3398.2,
+      "loadMs": 4530.5,
+      "fcpMs": 3304,
+      "lcpMs": 3560
+    }
+  ],
+  "navigations": [
+    {
+      "id": "nav-b144ecac-a254-4ca6-b3f5-ceae1fd8db5e",
+      "startedAt": "2026-03-21T22:06:08.221Z",
+      "from": "/brand/flex",
+      "to": "/",
+      "fromType": "brand",
+      "toType": "home",
+      "resolvedMs": 1421.2,
+      "loadingMs": null,
+      "suspenseMs": 1371.8,
+      "totalMs": 1430.2,
+      "requestCount": 0,
+      "requestTotalMs": 0,
+      "requestMaxMs": 0,
+      "requests": []
+    },
+    {
+      "id": "nav-ef5b4fcd-acf4-493d-bc18-94390881b152",
+      "startedAt": "2026-03-21T22:05:56.544Z",
+      "from": "/product-category/mans/",
+      "to": "/brand/flex",
+      "fromType": "category",
+      "toType": "brand",
+      "resolvedMs": 3955.9,
+      "loadingMs": null,
+      "suspenseMs": 3701.5,
+      "totalMs": 3963.1,
+      "requestCount": 0,
+      "requestTotalMs": 0,
+      "requestMaxMs": 0,
+      "requests": []
+    },
+    {
+      "id": "nav-dc901ed0-f76a-48ab-89e5-aa4ed7da441d",
+      "startedAt": "2026-03-21T22:05:38.087Z",
+      "from": "/product/futbolka-oversajz-molochna-independence-vid-brendu-beom-design/",
+      "to": "/product-category/mans/",
+      "fromType": "product",
+      "toType": "category",
+      "resolvedMs": 2811,
+      "loadingMs": null,
+      "suspenseMs": 2766.4,
+      "totalMs": 2862.6,
+      "requestCount": 0,
+      "requestTotalMs": 0,
+      "requestMaxMs": 0,
+      "requests": []
+    },
+    {
+      "id": "nav-7fbb1a8b-f035-4323-876c-13786c688509",
+      "startedAt": "2026-03-21T22:05:26.035Z",
+      "from": "/product-category/women/",
+      "to": "/product/futbolka-oversajz-molochna-independence-vid-brendu-beom-design/",
+      "fromType": "category",
+      "toType": "product",
+      "resolvedMs": 2395.2,
+      "loadingMs": null,
+      "suspenseMs": 1861.2,
+      "totalMs": 2400.3,
+      "requestCount": 0,
+      "requestTotalMs": 0,
+      "requestMaxMs": 0,
+      "requests": []
+    },
+    {
+      "id": "nav-ee4014bf-aa90-4fa9-b633-46c8b0da1d84",
+      "startedAt": "2026-03-21T22:05:09.475Z",
+      "from": "/?perf=1",
+      "to": "/product-category/women/",
+      "fromType": "home",
+      "toType": "category",
+      "resolvedMs": 3384.7,
+      "loadingMs": null,
+      "suspenseMs": 3090.4,
+      "totalMs": 3398.1,
+      "requestCount": 0,
+      "requestTotalMs": 0,
+      "requestMaxMs": 0,
+      "requests": []
+    }
+  ]
+}

@@ -3,15 +3,15 @@ function get_product_id_by_slug($product_slug) {
   $product = get_page_by_path($product_slug, OBJECT, 'product');
   if ($product) {
     return $product->ID;
-  } else {
-    return new WP_REST_Response('Product not found', 404);
   }
+  return null;
 }
 
 add_action( 'rest_api_init', function () {
   register_rest_route('/api/product', '/get_single_product', [
     'methods'  => 'GET',
     'callback' => 'get_single_product',
+    'permission_callback' => '__return_true',
     'args'     => [
       'lang' => [
         'required' => false,
@@ -25,12 +25,16 @@ add_action( 'rest_api_init', function () {
 });
 
 function get_single_product($data) {
+
   $lang = $data['lang'];
   $url = $data['url'];
 
+  // var_dump($lang);
+
   // Получаем ID продукта на основе переданного URL
   $page_id = get_product_id_by_slug($url);
-  
+  if (!$page_id) return new WP_Error('not_found', 'Продукт не найден', ['status' => 404]);
+
   $id = apply_filters('wpml_object_id', $page_id, 'product', true, $lang);
   if (!$id) return new WP_Error('not_found', 'Продукт не найден', ['status' => 404]);
   
@@ -62,35 +66,20 @@ function get_single_product($data) {
   ];
   $response['comments'] = get_comments($comments_args);
   
-
+  $response['related_products'] = get_related_products($id, $lang);
+  // var_dump($response);
   return $response;
 }
 
-add_action( 'rest_api_init', function () {
-  register_rest_route('/api/product', '/get_related_products', [
-    'methods' => 'GET',
-    'callback' => 'get_related_products',
-    'args'     => [
-      'lang' => [
-        'required' => false,
-        'default'  => 'ru',
-      ],
-      'id' => [
-        'required' => true,
-      ],
-    ],
-  ]);
-});
+function get_related_products($product_id, $lang) {
+  // $lang = $data['lang'];
+  // $id = $data['id'];
 
-function get_related_products($data) {
-  $lang = $data['lang'];
-  $id = $data['id'];
-
-  $product_id = apply_filters('wpml_object_id', $id, 'product', true, $lang);
-  if (!$product_id) return; 
+  // $product_id = apply_filters('wpml_object_id', $id, 'product', true, $lang);
+  // if (!$product_id) return; 
 
   $categories = get_the_terms($product_id, 'product_cat');
-  if (empty($categories) || is_wp_error($categories)) return;
+  if (empty($categories) || is_wp_error($categories)) return null;
   
 
   $selected_category_id = null;
@@ -134,9 +123,84 @@ function get_related_products($data) {
   if(!empty($posts)) {
     foreach($posts as $key => $post) {
       $product = wc_get_product($post->ID);
-      $response['related_products'][$key] = get_product_short_info($product, $post->ID);
+      $response[$key] = get_product_short_info($product, $post->ID);
     }
   }
   
   return $response;
 }
+
+// add_action( 'rest_api_init', function () {
+//   register_rest_route('/api/product', '/get_related_products', [
+//     'methods' => 'GET',
+//     'callback' => 'get_related_products',
+//     'args'     => [
+//       'lang' => [
+//         'required' => false,
+//         'default'  => 'ru',
+//       ],
+//       'id' => [
+//         'required' => true,
+//       ],
+//     ],
+//   ]);
+// });
+
+// function get_related_products($data) {
+//   $lang = $data['lang'];
+//   $id = $data['id'];
+
+//   $product_id = apply_filters('wpml_object_id', $id, 'product', true, $lang);
+//   if (!$product_id) return; 
+
+//   $categories = get_the_terms($product_id, 'product_cat');
+//   if (empty($categories) || is_wp_error($categories)) return;
+  
+
+//   $selected_category_id = null;
+
+//   foreach ($categories as $category) {
+//     $translated_category_id = apply_filters('wpml_object_id', $category->term_id, 'product_cat', true, $lang);
+
+//     if ($category->parent) {
+//       // Приоритет — дочерняя категория
+//       $selected_category_id = $translated_category_id ?: $category->term_id;
+//       break; // Как только найдена дочерняя категория, выходим из цикла
+//     } elseif (!$selected_category_id) {
+//       // Запоминаем родительскую, если дочерняя ещё не найдена
+//       $selected_category_id = $translated_category_id ?: $category->term_id;
+//     }
+//   }
+
+//   $args = [
+//     'post_type'   => 'product',
+//     'posts_per_page' => 10,
+//     'orderby' => 'date',
+//     'order' => 'DESC',
+//     'suppress_filters' => true,
+//   ];
+
+  
+//   if (!empty($selected_category_id)) {
+//     $tax_query = [
+//       'taxonomy'        => 'product_cat',
+//       'field'           => 'term_id',
+//       'terms'           => [$selected_category_id],
+//       'operator'        => 'IN',
+//     ];
+//     $args['tax_query'] = array('relation' => 'AND', $tax_query);
+//   }
+
+//   $posts = get_posts($args);
+
+//   $response = [];
+
+//   if(!empty($posts)) {
+//     foreach($posts as $key => $post) {
+//       $product = wc_get_product($post->ID);
+//       $response['related_products'][$key] = get_product_short_info($product, $post->ID);
+//     }
+//   }
+  
+//   return $response;
+// }

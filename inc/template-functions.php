@@ -193,7 +193,7 @@ function ajax_quickBuy(){
   }
   
   echo (json_encode($response));
-  telegram_notification($order_id);
+  // telegram_notification($order_id);
   wp_die();
 }
 
@@ -386,6 +386,7 @@ function telegram_notification( $order_id ) {
   file_get_contents("https://api.telegram.org/bot". $token ."/sendMessage?chat_id=". $chatID_Branded ."&parse_mode=html&text=" . urlencode($text));
   file_get_contents("https://api.telegram.org/bot". $token ."/sendMessage?chat_id=". $chatID_sasha ."&parse_mode=html&text=" . urlencode($text));
   file_get_contents("https://api.telegram.org/bot". $token ."/sendMessage?chat_id=". $chatID_nick ."&parse_mode=html&text=" . urlencode($text));
+  wp_die();
 }
 
 /**

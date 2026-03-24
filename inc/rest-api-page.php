@@ -5,6 +5,7 @@ add_action( 'rest_api_init', function () {
   register_rest_route( $namespace, '/page', [
     'methods' => 'POST',
     'callback' => 'get_page_info',
+    'permission_callback' => '__return_true',
     'args'     => [
       'url' => [
         'required' => true
@@ -27,8 +28,6 @@ function get_page_info(WP_REST_Request $request) {
 
 	$path_parts = explode('/', trim($url, '/'));
 	$language_codes = ['en', 'uk', 'ru'];
-
-  $path_parts = explode('/', trim($url, '/'));
 
   if (in_array($path_parts[0], $language_codes)) {
     array_shift($path_parts); 

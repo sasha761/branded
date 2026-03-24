@@ -6,13 +6,14 @@
  *
  * @package News
  */
-require_once(__DIR__ . '/vendor/autoload.php');
-Timber\Timber::init();
-
+ 
 function add_cors_head(){
-  header("Access-Control-Allow-Origin: https://localhost:8080");
+  header("Access-Control-Allow-Origin: http://localhost:3000");
 }
 add_action('init','add_cors_head');
+
+require_once(__DIR__ . '/vendor/autoload.php');
+Timber\Timber::init();
 
 if ( ! class_exists( 'Timber' ) ) {
   add_action( 'admin_notices', function () {

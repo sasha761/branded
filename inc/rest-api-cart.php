@@ -8,6 +8,7 @@ add_action( 'rest_api_init', function () {
   register_rest_route($namespace, '/get_cart_url', [
     'methods' => 'GET',
     'callback' => 'get_cart_url',
+    'permission_callback' => '__return_true',
     'args' => [
       'lang' => [
         'required' => false,
@@ -18,17 +19,14 @@ add_action( 'rest_api_init', function () {
 
   register_rest_route($namespace, '/create_order', [
     'methods' => 'POST',
-    'callback' => 'create_order'
+    'callback' => 'create_order',
+    'permission_callback' => '__return_true',
   ]);
 
   register_rest_route($namespace, '/get_order_info', [
     'methods' => 'GET',
-    'callback' => 'get_order_info'
-  ]);
-
-  register_rest_route($namespace, '/get_checkout_fields', [
-    'methods' => 'GET',
-    'callback' => 'get_checkout_fields'
+    'callback' => 'get_order_info',
+    'permission_callback' => '__return_true',
   ]);
 });
 
@@ -56,10 +54,8 @@ function get_order_info($request) {
     'order_number' => $order->get_order_number(),
     'order_date' => date('Y-m-d H:i:s', strtotime(get_post($order->get_id())->post_date)),
     'status' => $order->get_status(),
-    'shipping_total' => $order->get_total_shipping(),
+    'shipping_total' => $order->get_shipping_total(),
     'shipping_tax_total' => wc_format_decimal($order->get_shipping_tax(), 2),
-    'fee_total' => wc_format_decimal($fee_total, 2),
-    'fee_tax_total' => wc_format_decimal($fee_tax_total, 2),
     'tax_total' => wc_format_decimal($order->get_total_tax(), 2),
     'cart_discount' => (defined('WC_VERSION') && (WC_VERSION >= 2.3)) ? wc_format_decimal($order->get_total_discount(), 2) : wc_format_decimal($order->get_cart_discount(), 2),
     'order_discount' => (defined('WC_VERSION') && (WC_VERSION >= 2.3)) ? wc_format_decimal($order->get_total_discount(), 2) : wc_format_decimal($order->get_order_discount(), 2),
@@ -191,28 +187,3 @@ function create_order(WP_REST_Request $request) {
 }
 
 
-function get_checkout_fields() {
-    // Убедитесь, что WooCommerce активирован
-    // if (!class_exists('WooCommerce')) {
-    //     return rest_ensure_response('WooCommerce is not active.');
-    // }
-
-    // // Получите объект WC_Checkout
-    // $checkout = WC()->checkout();
-
-    // // Проверьте, что объект успешно инициализирован
-    // if (!$checkout || !is_a($checkout, 'WC_Checkout')) {
-    //     return rest_ensure_response('Unable to initialize WC_Checkout.');
-    // }
-
-    // // Дополнительная проверка наличия метода get_value()
-    // if (!method_exists($checkout, 'get_value')) {
-    //     return rest_ensure_response('WC_Checkout does not have get_value() method.');
-    // }
-
-    // // Получите поля для биллинга
-    // $context['checkout_billing'] = $checkout->get_checkout_fields('billing');
-
-    // // Отправьте данные в JSON
-    // return rest_ensure_response($context);
-}

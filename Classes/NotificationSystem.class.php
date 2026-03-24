@@ -50,7 +50,7 @@ class NotificationSystem {
 
       $user_mail_body = 'Спасибо за подписку! Ваш скидочный купон  <b> kapd7bvu </b>';
       wp_mail( $email, $this->subject, $user_mail_body, $this->headers );
-      
+      wp_die();
     }
 }
 
