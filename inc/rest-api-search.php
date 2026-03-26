@@ -13,16 +13,31 @@ add_action('rest_api_init', function () {
       'lang' => [
         'required' => false,
         'default' => 'ru'
+      ],
+      'posts_per_page' => [
+        'required' => false,
+        'default' => 7
+      ],
+      'page' => [
+        'required' => false,
+        'default' => 1
+      ],
+      'offset' => [
+        'required' => false,
+        'default' => null
       ]
     ]
   ]);
 });
 
 function custom_search_endpoint(WP_REST_Request $request) {
-  global $wpdb;
+  // global $wpdb;
 
   $query = sanitize_text_field($request->get_param('query'));
   $lang  = sanitize_text_field($request->get_param('lang'));
+  $posts_per_page = intval($request->get_param('posts_per_page'));
+  $page = max(1, intval($request->get_param('page')));
+  $offset = $request->get_param('offset');
 
   if (!$lang) {
       $lang = apply_filters('wpml_current_language', NULL);
@@ -31,14 +46,19 @@ function custom_search_endpoint(WP_REST_Request $request) {
   if (mb_strlen($query) < 3) {
       return new WP_Error('search_error', 'Введите минимум 3 символа', ['status' => 400]);
   }
-  
+
   $args = [
-    'post_type'      => 'product', 
-    's'              => $query, 
-    'posts_per_page' => 7, 
-    'post_status'    => 'publish', 
+    'post_type'      => 'product',
+    's'              => $query,
+    'posts_per_page' => $posts_per_page,
+    'post_status'    => 'publish',
   ];
 
+  if ($offset !== null) {
+    $args['offset'] = max(0, intval($offset));
+  } else {
+    $args['paged'] = $page;
+  }
 
   add_filter('post_search_columns', function($search_columns) {
       return ['post_title'];
@@ -47,17 +67,24 @@ function custom_search_endpoint(WP_REST_Request $request) {
   $search_query = new WP_Query($args);
   $posts = $search_query->posts;
 
-  $response = [];
+  $total = $search_query->found_posts;
+  $total_pages = $posts_per_page > 0 ? intval($search_query->max_num_pages) : 1;
+
+  $response = [
+    'products_count' => $total,
+    'total_pages'    => $total_pages,
+    'current_page'   => $page,
+    'per_page'       => $posts_per_page,
+    'products'       => [],
+  ];
 
   if (!empty($posts)) {
-    $response['products_count'] = $search_query->found_posts;
-
     foreach ($posts as $key => $post) {
       $post_id = function_exists('icl_object_id') ? apply_filters('wpml_object_id', $post->ID, 'product', true, $lang) : $post->ID;
       $product = wc_get_product($post_id);
       $response['products'][$key] = get_product_short_info($product, $post_id);
     }
-  } 
+  }
 
   return $response;
 }

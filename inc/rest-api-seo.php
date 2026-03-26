@@ -237,13 +237,26 @@ function resolve_post_id_from_request($url, $type, $lang) {
       }
       $slug = implode('/', $path_parts);
 
-      if (function_exists('wpml_object_id_filter')) {
-        $page_id = url_to_postid($slug);
-        return wpml_object_id_filter($page_id, 'page', true, $lang);
+      if (function_exists('icl_object_id')) {
+        global $sitepress;
+        if ($sitepress) {
+          $sitepress->switch_lang('all');
+        }
       }
 
       $page = get_page_by_path($slug, OBJECT, 'page');
-      return $page ? $page->ID : null;
+
+      if (function_exists('icl_object_id') && isset($sitepress)) {
+        $sitepress->switch_lang($lang);
+      }
+
+      if ($page) {
+        return function_exists('icl_object_id')
+          ? apply_filters('wpml_object_id', $page->ID, 'page', true, $lang)
+          : $page->ID;
+      }
+
+      return null;
 
     case 'category':
       $category_slug = clean_url_slug($url);

@@ -6,8 +6,8 @@ $context = Timber::context();
 
 $context['post'] = Timber::get_post();
 $args = array(
-  'post_type' => 'product', 
-  'status' => "approve", 
+  'type' => 'review',
+  'status' => 'approve',
 );
 $context['reviews'] = get_comments($args);
 

@@ -36,12 +36,22 @@ function get_page_info(WP_REST_Request $request) {
   $slug = implode('/', $path_parts);
 
 
-	if (function_exists('wpml_object_id_filter')) {
-    $page_id = url_to_postid($slug);
-    $translated_page_id = wpml_object_id_filter($page_id, 'page', true, $lang);
+	if (function_exists('icl_object_id')) {
+    global $sitepress;
+    if ($sitepress) {
+      $sitepress->switch_lang('all');
+    }
+  }
+
+  $page = get_page_by_path($slug, OBJECT, 'page');
+
+  if (function_exists('icl_object_id') && isset($sitepress)) {
+    $sitepress->switch_lang($lang);
+  }
+
+  if ($page && function_exists('wpml_object_id_filter')) {
+    $translated_page_id = wpml_object_id_filter($page->ID, 'page', true, $lang);
     $page = get_post($translated_page_id);
-  } else {
-    $page = get_page_by_path($slug, OBJECT, 'page');
   }
 
   if (!$page) {

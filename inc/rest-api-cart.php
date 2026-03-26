@@ -27,6 +27,16 @@ add_action( 'rest_api_init', function () {
     'methods' => 'GET',
     'callback' => 'get_order_info',
     'permission_callback' => '__return_true',
+    'args' => [
+      'order_id' => [
+        'required' => true,
+        'type'     => 'integer',
+      ],
+      'lang' => [
+        'required' => false,
+        'default'  => 'ru',
+      ],
+    ],
   ]);
 });
 
@@ -44,81 +54,84 @@ function get_cart_url(WP_REST_Request $request) {
   return $context;
 }
 
-function get_order_info($request) {
-  $order_id = $request['order_id'];
-  $order = wc_get_order($order_id);
+function get_order_info(WP_REST_Request $request) {
+  $order_id = intval($request->get_param('order_id'));
+  $lang     = sanitize_text_field($request->get_param('lang'));
+  $order    = wc_get_order($order_id);
 
-  $data['order_data'] = array(
-    'order_items' => $order->get_items(),
-    'order_id' => $order->get_id(),
-    'order_number' => $order->get_order_number(),
-    'order_date' => date('Y-m-d H:i:s', strtotime(get_post($order->get_id())->post_date)),
-    'status' => $order->get_status(),
-    'shipping_total' => $order->get_shipping_total(),
-    'shipping_tax_total' => wc_format_decimal($order->get_shipping_tax(), 2),
-    'tax_total' => wc_format_decimal($order->get_total_tax(), 2),
-    'cart_discount' => (defined('WC_VERSION') && (WC_VERSION >= 2.3)) ? wc_format_decimal($order->get_total_discount(), 2) : wc_format_decimal($order->get_cart_discount(), 2),
-    'order_discount' => (defined('WC_VERSION') && (WC_VERSION >= 2.3)) ? wc_format_decimal($order->get_total_discount(), 2) : wc_format_decimal($order->get_order_discount(), 2),
-    'discount_total' => wc_format_decimal($order->get_total_discount(), 2),
-    'order_total' => wc_format_decimal($order->get_total(), 2),
-    'order_currency' => $order->get_currency(),
-    'payment_method' => $order->get_payment_method(),
+  if (!$order) {
+    return new WP_Error('order_not_found', 'Order not found', ['status' => 404]);
+  }
+
+  $data['order_data'] = [
+    'order_id'             => $order->get_id(),
+    'order_number'         => $order->get_order_number(),
+    'order_date'           => $order->get_date_created() ? $order->get_date_created()->date('Y-m-d H:i:s') : '',
+    'status'               => $order->get_status(),
+    'shipping_total'       => $order->get_shipping_total(),
+    'shipping_tax_total'   => wc_format_decimal($order->get_shipping_tax(), 2),
+    'tax_total'            => wc_format_decimal($order->get_total_tax(), 2),
+    'discount_total'       => wc_format_decimal($order->get_total_discount(), 2),
+    'order_total'          => wc_format_decimal($order->get_total(), 2),
+    'order_currency'       => $order->get_currency(),
+    'payment_method'       => $order->get_payment_method(),
     'payment_method_title' => $order->get_payment_method_title(),
-    'shipping_method' => $order->get_shipping_method(),
-    'customer_id' => $order->get_user_id(),
-    'customer_user' => $order->get_user_id(),
-    'customer_email' => ($a = get_userdata($order->get_user_id() )) ? $a->user_email : '',
-    'billing_first_name' => $order->get_billing_first_name(),
-    'billing_last_name' => $order->get_billing_last_name(),
-    'billing_company' => $order->get_billing_company(),
-    'billing_email' => $order->get_billing_email(),
-    'billing_phone' => $order->get_billing_phone(),
-    'billing_address_1' => $order->get_billing_address_1(),
-    'billing_address_2' => $order->get_billing_address_2(),
-    'billing_postcode' => $order->get_billing_postcode(),
-    'billing_city' => $order->get_billing_city(),
-    'billing_state' => $order->get_billing_state(),
-    'billing_country' => $order->get_billing_country(),
-    'shipping_first_name' => $order->get_shipping_first_name(),
-    'shipping_last_name' => $order->get_shipping_last_name(),
-    'shipping_company' => $order->get_shipping_company(),
-    'shipping_address_1' => $order->get_shipping_address_1(),
-    'shipping_address_2' => $order->get_shipping_address_2(),
-    'shipping_postcode' => $order->get_shipping_postcode(),
-    'shipping_city' => $order->get_shipping_city(),
-    'shipping_state' => $order->get_shipping_state(),
-    'shipping_country' => $order->get_shipping_country(),
-    'customer_note' => $order->get_customer_note(),
-    'download_permissions' => $order->is_download_permitted() ? $order->is_download_permitted() : 0,
-  );
+    'shipping_method'      => $order->get_shipping_method(),
+    'customer_id'          => $order->get_user_id(),
+    'customer_email'       => $order->get_billing_email(),
+    'billing_first_name'   => $order->get_billing_first_name(),
+    'billing_last_name'    => $order->get_billing_last_name(),
+    'billing_company'      => $order->get_billing_company(),
+    'billing_email'        => $order->get_billing_email(),
+    'billing_phone'        => $order->get_billing_phone(),
+    'billing_address_1'    => $order->get_billing_address_1(),
+    'billing_address_2'    => $order->get_billing_address_2(),
+    'billing_postcode'     => $order->get_billing_postcode(),
+    'billing_city'         => $order->get_billing_city(),
+    'billing_state'        => $order->get_billing_state(),
+    'billing_country'      => $order->get_billing_country(),
+    'shipping_first_name'  => $order->get_shipping_first_name(),
+    'shipping_last_name'   => $order->get_shipping_last_name(),
+    'shipping_company'     => $order->get_shipping_company(),
+    'shipping_address_1'   => $order->get_shipping_address_1(),
+    'shipping_address_2'   => $order->get_shipping_address_2(),
+    'shipping_postcode'    => $order->get_shipping_postcode(),
+    'shipping_city'        => $order->get_shipping_city(),
+    'shipping_state'       => $order->get_shipping_state(),
+    'shipping_country'     => $order->get_shipping_country(),
+    'customer_note'        => $order->get_customer_note(),
+  ];
 
   $data['products'] = [];
-  // Get and Loop Over Order Items
-  foreach ( $order->get_items() as $item_id => $item ) {
-    $products_array = [];
-    $categories           = get_the_terms( $item->get_product_id(), 'product_cat' );
-    foreach ($categories as $key => $category) {
-      if ($category->parent) {
-        if ($key == 0) $key = $key + 1;
-        $products_array['cats'][$key] = $category->name;
-      } else {
-        $products_array['cats'][0] = $category->name;
-      }
-    }
-    ksort($products_array['cats']);
 
-    $products_array['id'] = $item->get_product_id();
+  foreach ($order->get_items() as $item_id => $item) {
+    $products_array = [];
+    $categories = get_the_terms($item->get_product_id(), 'product_cat');
+
+    if ($categories && !is_wp_error($categories)) {
+      foreach ($categories as $key => $category) {
+        if ($category->parent) {
+          if ($key == 0) $key = $key + 1;
+          $products_array['cats'][$key] = $category->name;
+        } else {
+          $products_array['cats'][0] = $category->name;
+        }
+      }
+      ksort($products_array['cats']);
+    }
+
+    $products_array['id']           = $item->get_product_id();
     $products_array['variation_id'] = $item->get_variation_id();
-    $products_array['name'] = $item->get_name();
-    $products_array['brand'] = wc_get_product_terms( $item->get_product_id(), 'pa_brand', array()); 
-    $products_array['qty'] = $item->get_quantity();
-    $products_array['subtotal'] = $item->get_subtotal();
-    $products_array['total'] = $item->get_total();
+    $products_array['name']         = $item->get_name();
+    $products_array['brand']        = wc_get_product_terms($item->get_product_id(), 'pa_brand', []);
+    $products_array['qty']          = $item->get_quantity();
+    $products_array['subtotal']     = $item->get_subtotal();
+    $products_array['total']        = $item->get_total();
 
     $data['products'][] = $products_array;
   }
 
-  wp_send_json($data);
+  return $data;
 }
 
 function create_order(WP_REST_Request $request) {
