@@ -15,6 +15,136 @@ add_action('rest_api_init', function () {
   ]);
 });
 
+function rest_api_to_frontend_url($url): string
+{
+  if (!is_string($url)) {
+    return '';
+  }
+
+  $url = trim($url);
+
+  if ($url === '') {
+    return '';
+  }
+
+  $frontend_domain = defined('BRANDED_FRONTEND_URL')
+    ? trim((string) BRANDED_FRONTEND_URL)
+    : '';
+
+  if ($frontend_domain === '') {
+    $frontend_domain = home_url('/');
+  } elseif (!preg_match('#^https?://#i', $frontend_domain)) {
+    $frontend_domain = 'https://' . ltrim($frontend_domain, '/');
+  }
+
+  $frontend_domain = rtrim($frontend_domain, '/');
+  $backend_domain = rtrim(home_url('/'), '/');
+
+  // Если пришёл относительный путь вида /catalog/test
+  if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
+    if (strpos($url, '/wp-content/uploads/') === 0) {
+      return $backend_domain . $url;
+    }
+
+    return $frontend_domain . $url;
+  }
+
+  $parts = wp_parse_url($url);
+
+  // Если URL не распарсился или это не абсолютный URL — возвращаем как есть
+  if ($parts === false || empty($parts['host'])) {
+    return $url;
+  }
+
+  $backend_hosts = array_filter([
+    wp_parse_url(home_url('/'), PHP_URL_HOST),
+    wp_parse_url(site_url('/'), PHP_URL_HOST),
+  ]);
+
+  $url_host = strtolower((string) $parts['host']);
+  $allowed_hosts = array_map('strtolower', $backend_hosts);
+
+  // Внешние ссылки не трогаем
+  if (!in_array($url_host, $allowed_hosts, true)) {
+    return $url;
+  }
+
+  $path = $parts['path'] ?? '';
+  $query = isset($parts['query']) ? '?' . $parts['query'] : '';
+  $fragment = isset($parts['fragment']) ? '#' . $parts['fragment'] : '';
+
+  if (strpos($path, '/wp-content/uploads/') === 0) {
+    return $backend_domain . $path . $query . $fragment;
+  }
+
+  return $frontend_domain . $path . $query . $fragment;
+}
+
+function rest_api_to_path($url): string
+{
+  if (!is_string($url) || trim($url) === '') {
+    return '';
+  }
+
+  $parts = wp_parse_url(trim($url));
+
+  if ($parts === false) {
+    return $url;
+  }
+
+  $path = $parts['path'] ?? '';
+  $query = isset($parts['query']) ? '?' . $parts['query'] : '';
+  $fragment = isset($parts['fragment']) ? '#' . $parts['fragment'] : '';
+
+  return $path . $query . $fragment;
+}
+
+function rest_api_prepare_endpoint_response($value)
+{
+  if (is_string($value)) {
+    $value = trim($value);
+
+    if ($value === '' || !preg_match('#^https?://#i', $value)) {
+      return $value;
+    }
+
+    return rest_api_to_frontend_url($value);
+  }
+
+  if (is_array($value)) {
+    foreach ($value as $key => $item) {
+      $value[$key] = rest_api_prepare_endpoint_response($item);
+    }
+
+    return $value;
+  }
+
+  if (is_object($value)) {
+    foreach ($value as $key => $item) {
+      $value->{$key} = rest_api_prepare_endpoint_response($item);
+    }
+  }
+
+  return $value;
+}
+
+function rest_api_rewrite_frontend_urls_in_custom_endpoints($response, $server, $request)
+{
+  if (!($request instanceof WP_REST_Request)) {
+    return $response;
+  }
+
+  $route = (string) $request->get_route();
+
+  if ($route === '' || !preg_match('#^/?(api|rest_api)/#', $route)) {
+    return $response;
+  }
+
+  return rest_api_prepare_endpoint_response($response);
+}
+
+add_filter('rest_pre_echo_response', 'rest_api_rewrite_frontend_urls_in_custom_endpoints', 10, 3);
+
 function get_product_short_info($product, $id)
 {
 
@@ -23,7 +153,8 @@ function get_product_short_info($product, $id)
   // Добавляем проверку на существование бренда
   $brand_name = !empty($brand[0]) ? $brand[0]->name : '';
   $brand_slug = !empty($brand[0]) ? $brand[0]->slug : '';
-  $brand_url = !empty($brand[0]) ? get_term_link($brand[0]->term_id, 'pa_brand') : '';
+  $brand_url = !empty($brand[0]) ? rest_api_to_frontend_url(get_term_link($brand[0]->term_id, 'pa_brand')) : '';
+
 
   $attachment_ids = $product->get_gallery_image_ids($id);
   $post['brand'] = $brand;
@@ -37,13 +168,16 @@ function get_product_short_info($product, $id)
   $post['post_attr_brand'] = $brand_name;
   $post['post_link_brand'] = $brand_slug;
   $post['post_brand_url'] = $brand_url; // Добавляем ссылку на бренд
+  $post['post_brand_path'] = rest_api_to_path($brand_url);
   $post['short_description'] = wpautop($product->get_short_description());
   $post['description'] = wpautop(get_the_excerpt($id));
   $post['post_img_l'] = get_the_post_thumbnail_url($id, 'archive_xl');
   $post['post_img_m'] = get_the_post_thumbnail_url($id, 'archive_md');
   $post['post_img_xl'] = get_the_post_thumbnail_url($id, 'large');
   $post['video'] = get_field('video', $id);
-  $post['permalink'] = get_permalink($id);
+  // $post['permalink'] = get_permalink($id);
+  $post['permalink'] = rest_api_to_frontend_url(get_permalink($id));
+  $post['path'] = rest_api_to_path(get_permalink($id));
   $post['other_colors'] = get_field('other_colors', $id);
   $post['is_sale'] = false;
   // $post['stockStatus'] = $post['is_stock'] == 'outofstock' ? __('Out of stock', 'branded') : __('In stock', 'branded');
@@ -128,9 +262,18 @@ function get_category_details_by_slug($slug)
     'id' => $category_id,
     'name' => $acf_title ? $acf_title : $category_name,
     'parent' => $parent_category,
-    'url' => $category_url,
+    'url' => rest_api_to_frontend_url($category_url),
+    'path' => rest_api_to_path($category_url),
     'description' => $description ?: '',
   );
+
+  // return array(
+  //   'id' => $category_id,
+  //   'name' => $acf_title ? $acf_title : $category_name,
+  //   'parent' => $parent_category,
+  //   'url' => $category_url,
+  //   'description' => $description ?: '',
+  // );
 }
 
 function get_product_categories($id)

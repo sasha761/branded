@@ -291,6 +291,10 @@ function resolve_post_id_from_request($url, $type, $lang) {
   }
 }
 
+function rest_api_seo_is_valid_term($term) {
+  return $term && !is_wp_error($term);
+}
+
 function get_yoast_meta_for_post($post_id) {
   $post = get_post($post_id);
   $post_type = $post ? $post->post_type : 'post';
@@ -336,7 +340,7 @@ function get_yoast_meta_for_post($post_id) {
     $meta['og_image'] = get_the_post_thumbnail_url($post_id, 'large');
   }
   if (empty($meta['canonical'])) {
-    $meta['canonical'] = get_permalink($post_id);
+    $meta['canonical'] = rest_api_to_frontend_url(get_permalink($post_id));
   }
 
   $robots = [];
@@ -405,7 +409,7 @@ function get_yoast_meta_for_term($term_id, $taxonomy) {
   }
 
   if (empty($meta['canonical'])) {
-    $meta['canonical'] = get_term_link($term);
+    $meta['canonical'] = rest_api_to_frontend_url(get_term_link($term));
   }
 
   $meta['robots'] = ($meta['robots_noindex'] === 'noindex') ? 'noindex, follow' : 'index, follow';
@@ -531,8 +535,10 @@ function get_breadcrumbs_data(WP_REST_Request $request) {
 
     $breadcrumbs[] = [
       'text' => __('Главная', 'branded'),
-      'url'  => $home_url,
+      'url'  => rest_api_to_frontend_url($home_url),
+      'path' => rest_api_to_path($home_url),
     ];
+
 
     switch ($type) {
       case 'product':
@@ -555,6 +561,7 @@ function get_breadcrumbs_data(WP_REST_Request $request) {
         $breadcrumbs[] = [
           'text' => $product->get_title(),
           'url'  => null,
+          'path' => null,
         ];
         break;
 
@@ -572,6 +579,10 @@ function get_breadcrumbs_data(WP_REST_Request $request) {
           }
         }
 
+        if (!rest_api_seo_is_valid_term($term)) {
+          return new WP_Error('not_found', 'Category not found', ['status' => 404]);
+        }
+
         if ($term->parent) {
           $ancestors = get_ancestors($term->term_id, 'product_cat', 'taxonomy');
           $ancestors = array_reverse($ancestors);
@@ -580,7 +591,8 @@ function get_breadcrumbs_data(WP_REST_Request $request) {
             if ($ancestor && !is_wp_error($ancestor)) {
               $breadcrumbs[] = [
                 'text' => $ancestor->name,
-                'url'  => get_term_link($ancestor),
+                'url'  => rest_api_to_frontend_url(get_term_link($ancestor)),
+                'path' => rest_api_to_path(get_term_link($ancestor)),
               ];
             }
           }
@@ -589,6 +601,7 @@ function get_breadcrumbs_data(WP_REST_Request $request) {
         $breadcrumbs[] = [
           'text' => $term->name,
           'url'  => null,
+          'path' => null,
         ];
         break;
 
@@ -602,9 +615,15 @@ function get_breadcrumbs_data(WP_REST_Request $request) {
               $term = get_term($translated_id, 'pa_brand');
             }
           }
+
+          if (!rest_api_seo_is_valid_term($term)) {
+            return new WP_Error('not_found', 'Brand not found', ['status' => 404]);
+          }
+
           $breadcrumbs[] = [
             'text' => $term->name,
             'url'  => null,
+            'path' => null,
           ];
         }
         break;
@@ -620,13 +639,15 @@ function get_breadcrumbs_data(WP_REST_Request $request) {
             }
             $breadcrumbs[] = [
               'text' => get_the_title($ancestor_id),
-              'url'  => get_permalink($ancestor_id),
+              'url'  => rest_api_to_frontend_url(get_permalink($ancestor_id)),
+              'path' => rest_api_to_path(get_permalink($ancestor_id)),
             ];
           }
 
           $breadcrumbs[] = [
             'text' => get_the_title($resolved_id),
             'url'  => null,
+            'path' => null,
           ];
         }
         break;
@@ -671,7 +692,8 @@ function build_category_chain($categories, $lang) {
       if ($ancestor && !is_wp_error($ancestor)) {
         $chain[] = [
           'text' => $ancestor->name,
-          'url'  => get_term_link($ancestor),
+          'url'  => rest_api_to_frontend_url(get_term_link($ancestor)),
+          'path' => rest_api_to_path(get_term_link($ancestor)),
         ];
       }
     }
@@ -683,10 +705,13 @@ function build_category_chain($categories, $lang) {
       }
     }
 
-    $chain[] = [
-      'text' => $child_category->name,
-      'url'  => get_term_link($child_category),
-    ];
+    if (rest_api_seo_is_valid_term($child_category)) {
+      $chain[] = [
+        'text' => $child_category->name,
+        'url'  => rest_api_to_frontend_url(get_term_link($child_category)),
+        'path' => rest_api_to_path(get_term_link($child_category)),
+      ];
+    }
   } elseif ($parent_category) {
     if (function_exists('icl_object_id')) {
       $translated_id = apply_filters('wpml_object_id', $parent_category->term_id, 'product_cat', true, $lang);
@@ -695,10 +720,13 @@ function build_category_chain($categories, $lang) {
       }
     }
 
-    $chain[] = [
-      'text' => $parent_category->name,
-      'url'  => get_term_link($parent_category),
-    ];
+    if (rest_api_seo_is_valid_term($parent_category)) {
+      $chain[] = [
+        'text' => $parent_category->name,
+        'url'  => rest_api_to_frontend_url(get_term_link($parent_category)),
+        'path' => rest_api_to_path(get_term_link($parent_category)),
+      ];
+    }
   }
 
   return $chain;

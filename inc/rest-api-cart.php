@@ -5,18 +5,6 @@
 add_action( 'rest_api_init', function () {
   $namespace = '/api/cart';
 
-  register_rest_route($namespace, '/get_cart_url', [
-    'methods' => 'GET',
-    'callback' => 'get_cart_url',
-    'permission_callback' => '__return_true',
-    'args' => [
-      'lang' => [
-        'required' => false,
-        'default'  => 'ru',
-      ],
-    ]
-  ]);
-
   register_rest_route($namespace, '/create_order', [
     'methods' => 'POST',
     'callback' => 'create_order',
@@ -39,20 +27,6 @@ add_action( 'rest_api_init', function () {
     ],
   ]);
 });
-
-function get_cart_url(WP_REST_Request $request) {
-  $lang = $request->get_param('lang');
-
-  $cart_url = apply_filters( 'wpml_permalink', wc_get_cart_url(), $lang );
-  $checkout_url = apply_filters( 'wpml_permalink', wc_get_checkout_url(), $lang );
-
-  $context = [
-    'cart' => $cart_url,
-    'checkout' => $checkout_url,
-  ];
-
-  return $context;
-}
 
 function get_order_info(WP_REST_Request $request) {
   $order_id = intval($request->get_param('order_id'));
@@ -191,6 +165,7 @@ function create_order(WP_REST_Request $request) {
 
   if (!empty($order_id)) {
     $response = $order->get_checkout_order_received_url();
+    $response = rest_api_to_frontend_url($response);
   } else {
     $response = false;
   }

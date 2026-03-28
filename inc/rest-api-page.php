@@ -85,12 +85,10 @@ function get_page_info(WP_REST_Request $request) {
     $context['related_pages'][] = (object) [
         'ID'    => $related_page->ID,
         'title' => get_the_title($related_page->ID),
-        'link'  => get_the_permalink($related_page->ID),
+        'link' => rest_api_to_frontend_url(get_the_permalink($related_page->ID)),
+        'path' => rest_api_to_path(get_the_permalink($related_page->ID)),
     ];
 	}
-
-  // var_dump($context['related_pages']);
-  // $context['related_pages'] = $related_pages;
 
   return $context;
 }

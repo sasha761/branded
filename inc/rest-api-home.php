@@ -39,8 +39,35 @@ function get_home_info(WP_REST_Request $request) {
     }
   }
 
-  $context['banners_group'] = get_field('banners_group', $front_page_id);
-  $context['accesories'] = get_field('accesories', $front_page_id);
+  $banners_group = get_field('banners_group', $front_page_id);
+  if (!empty($banners_group) && is_array($banners_group)) {
+    foreach ($banners_group['banners'] as &$item) {
+      if (!empty($item['link']) && is_string($item['link'])) {
+        $raw_link = $item['link'];
+
+        $item['link'] = rest_api_to_frontend_url($raw_link);
+        $item['path'] = rest_api_to_path($raw_link);
+      }
+    }
+    unset($item);
+  }
+
+  $accesories = get_field('accesories', $front_page_id);
+
+  if (!empty($accesories) && is_array($accesories)) {
+    foreach ($accesories as &$item) {
+      if (!empty($item['link']) && is_string($item['link'])) {
+        $raw_link = $item['link'];
+
+        $item['link'] = rest_api_to_frontend_url($raw_link);
+        $item['path'] = rest_api_to_path($raw_link);
+      }
+    }
+    unset($item);
+  }
+
+  $context['accesories'] = $accesories;
+  $context['banners_group'] = $banners_group;
 
   wp_cache_set($cache_key, $context, 'rest_api', DAY_IN_SECONDS);
   return $context;

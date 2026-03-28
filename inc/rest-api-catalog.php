@@ -584,7 +584,8 @@ function get_catalog_sidebar(WP_REST_Request $request) {
           'term_id' => $child->term_id,
           'name'    => $child->name,
           'slug'    => $child->slug,
-          'url'     => get_term_link($child),
+          'url'     => rest_api_to_frontend_url(get_term_link($child)),
+          'path'    => rest_api_to_path(get_term_link($child)),
           'count'   => $child->count,
         ];
       }
@@ -594,7 +595,8 @@ function get_catalog_sidebar(WP_REST_Request $request) {
       'id'        => $root_id,
       'label'     => $root_term->name,
       'slug'      => $root_term->slug,
-      'url'       => get_term_link($root_term),
+      'url'       => rest_api_to_frontend_url(get_term_link($root_term)),
+      'path'      => rest_api_to_path(get_term_link($root_term)),
       'is_active' => ($active_root_id === $root_id),
       'children'  => $children_data,
     ];

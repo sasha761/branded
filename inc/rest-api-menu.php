@@ -60,7 +60,7 @@ function process_menu_item($items, $parent_id = 0) {
   $submenu = [];
 
   foreach ($items as $item) {
-    if ($item->menu_item_parent == $parent_id) {
+    if ((int) $item->menu_item_parent === (int) $parent_id) {
       $image = get_field('image', $item->ID);
       $image_data = null;
 
@@ -68,20 +68,21 @@ function process_menu_item($items, $parent_id = 0) {
         $resized_image_url = get_resized_image_url($image['url'], 180, 180, 'center', 'thumbnail');
 
         $image_data = [
-          'url' => $resized_image_url,
+          'url'   => $resized_image_url,
           'title' => $image['title'] ?? null,
-          'alt' => $image['alt'] ?? null,
+          'alt'   => $image['alt'] ?? null,
         ];
       }
 
-      $url_parts = parse_url($item->url);
-      $path = $url_parts['path'] ?? '';
+      $raw_url = is_string($item->url) ? trim($item->url) : '';
+      $absolute_url = rest_api_menu_make_absolute_url($raw_url);
 
       $submenu[] = [
-        'title' => $item->title,
-        'url' => $item->url,
-        'slug' => $path,
-        'image' => $image_data,
+        'title'   => $item->title,
+        'url'     => rest_api_to_frontend_url($absolute_url),
+        'path'    => rest_api_to_path($absolute_url),
+        // 'slug'    => rest_api_to_path($absolute_url), // можно оставить для обратной совместимости
+        'image'   => $image_data,
         'submenu' => process_menu_item($items, $item->ID),
       ];
     }
@@ -275,11 +276,22 @@ function get_languages($data) {
         foreach ($languages as $code => &$language) {
           if ($source_url !== '') {
             $translated_url = apply_filters('wpml_permalink', $source_url, $code);
+
             if (is_string($translated_url) && $translated_url !== '') {
-              $language['url'] = esc_url_raw($translated_url);
+              $language['url'] = esc_url_raw(
+                rest_api_to_frontend_url($translated_url)
+              );
+
+              $language['path'] = rest_api_to_path($translated_url);
             }
           } elseif (!empty($language['url'])) {
-            $language['url'] = esc_url_raw(rest_api_menu_make_absolute_url($language['url']));
+            $absolute_url = rest_api_menu_make_absolute_url($language['url']);
+
+            $language['url'] = esc_url_raw(
+              rest_api_to_frontend_url($absolute_url)
+            );
+
+            $language['path'] = rest_api_to_path($absolute_url);
           }
 
           $language['active'] = ($code === $current_lang) ? 1 : 0;

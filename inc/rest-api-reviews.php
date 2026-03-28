@@ -83,7 +83,8 @@ function get_reviews_endpoint(WP_REST_Request $request) {
       'date'           => $review->comment_date,
       'rating'         => $rating,
       'product_title'  => html_entity_decode(get_the_title($post_id), ENT_QUOTES, 'UTF-8'),
-      'product_link'   => get_permalink($post_id),
+      'product_link' => rest_api_to_frontend_url(get_permalink($post_id)),
+      'product_path' => rest_api_to_path(get_permalink($post_id)),
     ];
   }
 
